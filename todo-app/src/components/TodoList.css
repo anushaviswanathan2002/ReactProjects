@@ -1,0 +1,2 @@
+.todo-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.no-tasks { text-align: center; color: #ccc; font-size: 0.9rem; padding: 24px 0 8px; }

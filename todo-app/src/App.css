@@ -1,0 +1,37 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px 80px;
+}
+
+.app { width: 100%; display: flex; justify-content: center; }
+
+.app-container {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  padding: 36px 32px 28px;
+  width: 100%;
+  max-width: 540px;
+}
+
+.app-header { text-align: center; margin-bottom: 28px; }
+.app-title { font-size: 2rem; font-weight: 800; color: #2d2d2d; }
+.title-icon { margin-right: 8px; }
+.app-subtitle { margin-top: 4px; font-size: 0.9rem; color: #888; }
+
+.clear-btn {
+  display: block; margin: 16px auto 0;
+  background: none; border: 1px solid #e0e0e0; color: #888;
+  border-radius: 8px; padding: 7px 16px; font-size: 0.82rem; cursor: pointer;
+  transition: all 0.2s;
+}
+.clear-btn:hover { background: #fff0f0; border-color: #f28b82; color: #d93025; }
+
+.empty-state { text-align: center; color: #bbb; margin-top: 32px; font-size: 0.95rem; }
