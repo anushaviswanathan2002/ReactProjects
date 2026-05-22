@@ -1,0 +1,285 @@
+/* ─── Reset & Base ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Inter", "Segoe UI", sans-serif;
+  background: #f0f4f8;
+  color: #2d3748;
+  min-height: 100vh;
+}
+
+/* ─── Header ─── */
+.app-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 12px rgba(102,126,234,0.4);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo { font-size: 28px; }
+
+.header-content h1 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  flex: 1;
+}
+
+.note-count {
+  font-size: 13px;
+  background: rgba(255,255,255,0.25);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+/* ─── Layout ─── */
+.app-main {
+  max-width: 1200px;
+  margin: 32px auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .app-main { grid-template-columns: 1fr; }
+}
+
+/* ─── Note Form ─── */
+.note-form {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 88px;
+}
+
+.form-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  resize: none;
+  outline: none;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  border-color: #667eea;
+}
+
+/* ─── Color Picker ─── */
+.color-picker { display: flex; align-items: center; gap: 10px; }
+
+.color-label { font-size: 13px; color: #718096; font-weight: 500; }
+
+.color-swatches { display: flex; gap: 8px; }
+
+.color-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.color-swatch:hover { transform: scale(1.15); }
+
+.color-swatch.selected {
+  border-color: #4a5568;
+  transform: scale(1.2);
+}
+
+/* ─── Form Buttons ─── */
+.form-actions { display: flex; gap: 10px; }
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+.btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  flex: 1;
+}
+
+.btn-secondary {
+  background: #e2e8f0;
+  color: #4a5568;
+}
+
+/* ─── Search Bar ─── */
+.search-bar {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+}
+
+.search-input {
+  width: 100%;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 42px;
+  font-size: 14px;
+  font-family: inherit;
+  background: white;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102,126,234,0.15);
+}
+
+.clear-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #a0aec0;
+  font-size: 14px;
+  padding: 4px;
+}
+
+/* ─── Note Grid ─── */
+.note-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+/* ─── Note Card ─── */
+.note-card {
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  min-height: 150px;
+}
+
+.note-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+.note-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2d3748;
+  word-break: break-word;
+}
+
+.note-content {
+  font-size: 14px;
+  color: #4a5568;
+  line-height: 1.6;
+  flex: 1;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.note-meta { margin-top: auto; }
+
+.note-date {
+  font-size: 11px;
+  color: #718096;
+}
+
+.note-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.action-btn {
+  background: rgba(255,255,255,0.7);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 8px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.action-btn:hover { background: rgba(255,255,255,0.95); transform: scale(1.1); }
+
+.confirm-delete {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #e53e3e;
+}
+
+.confirm-btn { color: #e53e3e; }
+.cancel-btn  { color: #718096; }
+
+/* ─── Empty State ─── */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 64px 24px;
+  color: #a0aec0;
+}
+
+.empty-icon { font-size: 56px; display: block; margin-bottom: 16px; }
+
+.empty-state p { font-size: 16px; }
