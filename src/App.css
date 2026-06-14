@@ -1,0 +1,72 @@
+/* CSS with lots of issues */
+
+/* Selector specificity problems */
+.App {
+  text-align: center;
+}
+
+.App .App-header {
+  background-color: #222;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vpx);
+  color: white;
+}
+
+/* Duplicate properties */
+.App-header {
+  background-color: #333;
+  padding: 20px;
+  /* This will be overridden */
+  background-color: #222;
+}
+
+/* Unused CSS class */
+.unused-class {
+  color: red;
+  font-size: 20px;
+}
+
+/* Important declarations everywhere - BAD PRACTICE */
+.counter-container {
+  margin: 20px !important;
+  padding: 20px !important;
+}
+
+/* Deep nesting - hard to maintain */
+.counter-container .counter-container div button {
+  border-radius: 5px;
+}
+
+/* Using px for everything - not responsive */
+button {
+  font-size: 16px;
+  padding: 10px;
+  margin: 5px;
+}
+
+/* Magic numbers in CSS */
+div {
+  max-width: 1000px;
+}
+
+/* Overly specific selectors */
+div.counter-container div div button.increment-button {
+  background-color: green;
+}
+
+/* Duplicate rules */
+p {
+  color: #333;
+}
+
+p {
+  color: #444;
+}
+
+p {
+  color: #555;
+}
