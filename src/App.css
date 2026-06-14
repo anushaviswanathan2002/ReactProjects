@@ -1,72 +1,228 @@
-/* CSS with lots of issues */
+/* CSS with issues - redundant, inconsistent, and hard to maintain */
 
-/* Selector specificity problems */
-.App {
-  text-align: center;
+/* Duplicate styles - NOT DRY */
+.notes-list {
+  padding: 20px;
+  background-color: #f9f9f9;
 }
 
-.App .App-header {
-  background-color: #222;
-  min-height: 100vh;
+.notes-list h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.notes-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vpx);
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.note-item {
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: white;
+  width: 300px;
+  margin-bottom: 20px;
+  /* Using !important - HARD TO OVERRIDE */
+  margin: 10px !important;
+  /* Redundant box-shadow */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.note-item h3 {
+  margin-top: 0;
+  font-size: 18px;
+  /* Magic numbers */
+  line-height: 1.2;
+}
+
+.note-item p {
+  color: #666;
+  font-size: 14px;
+  /* Magic number */
+  line-height: 1.5;
+}
+
+.note-item small {
+  color: #999;
+  font-size: 12px;
+}
+
+/* Inline styles everywhere in component - redundant CSS here */
+button {
+  padding: 12px 24px;
+  font-size: 16px;
+  background-color: #4CAF50;
   color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Duplicate selector */
+button {
+  outline: none;
+}
+
+/* Inconsistent naming - BEM violation */
+.note_editor {
+  padding: 20px;
+  background-color: #fff;
+}
+
+/* Using id for styling - BAD PRACTICE */
+#note-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Deep nesting - SPECIFICITY ISSUE */
+.header nav ul li a span {
+  color: #333;
+  font-size: 14px;
+}
+
+/* Unused class */
+.unused-style {
+  display: none;
 }
 
 /* Duplicate properties */
-.App-header {
-  background-color: #333;
+.notes-stats {
   padding: 20px;
-  /* This will be overridden */
-  background-color: #222;
+  background-color: #e8f5e9;
+  padding: 25px;
+  margin-top: 20px;
 }
 
-/* Unused CSS class */
-.unused-class {
-  color: red;
-  font-size: 20px;
+/* Magic numbers - should be variables */
+.notes-stats p {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-top: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  margin-left: 10px;
 }
 
-/* Important declarations everywhere - BAD PRACTICE */
-.counter-container {
-  margin: 20px !important;
+/* Important abuse */
+.app {
+  min-height: 100vh !important;
   padding: 20px !important;
 }
 
-/* Deep nesting - hard to maintain */
-.counter-container .counter-container div button {
-  border-radius: 5px;
+/* Redundant flex properties */
+.notes-container {
+  display: flex !important;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: stretch;
 }
 
-/* Using px for everything - not responsive */
+/* Duplicate media query */
+@media (max-width: 768px) {
+  .note-item {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .note-item {
+    padding: 10px;
+  }
+}
+
+/* Incomplete media query */
+@media (min-width: 1200px) {
+  .notes-container {
+    max-width: 1200px;
+  }
+}
+
+/* Unused pseudo-selector */
+.note-item:hover::before {
+  content: '';
+}
+
+/* Conflicting styles */
+.note-item {
+  border: 1px solid #ddd;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  border-radius: 12px;
+}
+
+/* Duplicate selectors */
+button:hover {
+  background-color: #45a049;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* Redundant comment */
+
+/* Button styles */
 button {
+  transition: all 0.3s;
+}
+
+/* Another redundant comment */
+
+/* More button styles */
+button {
+  box-sizing: border-box;
+}
+
+/* Inconsistent spacing */
+.notes-list {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* TODO: Remove unused styles */
+.temp-class {
+  display: none;
+}
+
+/* Hardcoded color values */
+.quick-add-button {
+  background-color: #2196F3;
+  color: #ffffff;
+  border-color: #1976D2;
+}
+
+/* More magic numbers */
+.note-editor textarea {
+  width: 100%;
+  min-height: 150px;
+  padding: 12px;
   font-size: 16px;
-  padding: 10px;
-  margin: 5px;
+  line-height: 24px;
+  border-radius: 4px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
-/* Magic numbers in CSS */
-div {
-  max-width: 1000px;
+/* Overly specific selector */
+body div.app header div button {
+  cursor: pointer;
 }
 
-/* Overly specific selectors */
-div.counter-container div div button.increment-button {
-  background-color: green;
-}
-
-/* Duplicate rules */
-p {
-  color: #333;
-}
-
-p {
-  color: #444;
-}
-
-p {
-  color: #555;
+/* Unused animation */
+@keyframes unused-animation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
