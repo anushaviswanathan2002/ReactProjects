@@ -3,65 +3,67 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 
-// Global variable pollution
-var appConfig = {
-  apiUrl: 'http://localhost:3000',
-  debug: true,
+// Application configuration - moved from global variable to proper config
+const appConfig = {
+  apiUrl: process.env.REACT_APP_API_URL || 'http://localhost:3000',
   version: '1.0.0'
 };
 
-// Unused global variable
-var tempData = [];
-
-// Function with side effects - BAD PRACTICE
-function initializeApp() {
-  console.log('Initializing app...');
-  if (appConfig.debug) {
-    console.log('Debug mode enabled');
+// Error Boundary Component
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
   }
-  // Modifying global state
-  globalNoteId = 100;
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Error caught by boundary:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '20px', textAlign: 'center' }}>
+          <h1>Something went wrong</h1>
+          <p>Please refresh the page to try again.</p>
+          <button onClick={() => window.location.reload()}>
+            Refresh Page
+          </button>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
 }
 
-// Calling function with side effects at module load
-initializeApp();
-
-// Missing error boundary
+// Create root and render app with error boundary
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-// Missing StrictMode can cause issues with double rendering in development
 root.render(
   <React.StrictMode>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </React.StrictMode>
 );
 
-// Memory leak potential - no cleanup listener
-if (module.hot) {
-  module.hot.dispose(() => {
-    console.log('Module being replaced');
-    // Forgot cleanup
+// Service Worker registration with proper error handling
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('Service Worker registered:', registration.scope);
+      })
+      .catch((error) => {
+        console.error('Service Worker registration failed:', error);
+      });
   });
 }
 
-// Service Worker registration with no error handling
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').then(
-    (registration) => {
-      console.log('Service Worker registered:', registration);
-    }
-  );
-  // Missing catch for error handling
-}
-
-// Global event listeners without cleanup
-window.addEventListener('online', () => {
-  console.log('App is online');
-});
-
-window.addEventListener('offline', () => {
-  console.log('App is offline');
-});
-
-// TODO: Add proper error handling
-// TODO: Remove unused tempData variable
+// Export config for testing
+export { appConfig };

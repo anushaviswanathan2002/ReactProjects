@@ -1,615 +1,551 @@
-import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
+import React, { useState, useEffect, useCallback, createContext, useMemo } from 'react';
 import './App.css';
 
-// Global variable - NOT IDEAL
-var globalNoteId = 0;
-
-// Context with no Provider - will cause issues
+// Context for notes state management
 const NotesContext = createContext(null);
 
-// Unused function
-function unusedHelperFunction() {
-  console.log('This function is never used');
-}
-
-// Helper with console.log instead of proper error handling
+// Validation helper function
 function validateNote(note) {
-  console.log('Validating note:', note);
-  if (note.title === '') {
-    // Silent failure - no proper error handling
-    return true;
+  if (!note || typeof note.title !== 'string') {
+    return { valid: false, error: 'Invalid note structure' };
   }
-  return true;
+  if (note.title.trim() === '') {
+    return { valid: false, error: 'Title cannot be empty' };
+  }
+  if (note.content && note.content.length > 1000) {
+    return { valid: false, error: 'Content exceeds maximum length' };
+  }
+  return { valid: true, error: null };
 }
 
-// Notes List Component with many issues
-function NotesList() {
-  const [notes, setNotes] = useState([]);
+// Category color mapping
+const getCategoryColor = (category, priority) => {
+  const colors = {
+    work: priority === 'high' ? '#ff0000' : '#ff6600',
+    personal: '#00ff00',
+    shopping: '#0066ff',
+    ideas: '#9c27b0'
+  };
+  return colors[category] || '#666666';
+};
+
+// Notes List Component - Fixed
+function NotesList({ notes, onDelete, onEdit }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const inputRef = useRef(null);
-  
-  // Using var instead of const - SCOPE ISSUES
-  var categoryFilter = 'all';
+  const inputRef = React.useRef(null);
   
   useEffect(() => {
-    console.log('Component mounted');
-    // Memory leak potential - no cleanup
-    const interval = setInterval(() => {
-      // Doing unnecessary work on interval
-      console.log('Checking for updates...');
-      validateNote({ title: 'test' });
-    }, 5000);
-    // Forgot to return cleanup function
-    
-    // Direct DOM manipulation
     if (inputRef.current) {
       inputRef.current.focus();
     }
   }, []);
+
+  // Filter notes efficiently using useMemo
+  const filteredNotes = useMemo(() => {
+    return notes.filter(note => {
+      const matchesSearch = searchTerm === '' || 
+        note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (note.content && note.content.toLowerCase().includes(searchTerm.toLowerCase()));
+      const matchesCategory = selectedCategory === 'all' || note.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [notes, searchTerm, selectedCategory]);
   
-  // Creating function inside render - PERFORMANCE ISSUE
-  const handleSearch = (e) => {
+  const handleSearchChange = useCallback((e) => {
     setSearchTerm(e.target.value);
-    // Filtering inside render - INEFFICIENT
-    const filtered = notes.filter(note => 
-      note.title.toLowerCase().includes(e.target.value)
-    );
-    console.log('Filtered notes:', filtered.length);
-  };
+  }, []);
   
-  // Missing dependencies in useEffect
-  useEffect(() => {
-    console.log('Notes updated:', notes.length);
-  });
-  
-  // Deeply nested callback - HARD TO READ
-  const addNote = (title, content, category) => {
-    // No input validation
-    const newNote = {
-      id: globalNoteId++,
-      title: title,
-      content: content,
-      category: category,
-      createdAt: new Date().toISOString(),
-      // Using == instead of === - TYPE COERCION
-      priority: notes.length == 0 ? 'high' : 'normal'
-    };
-    
-    // Mutating state directly - BAD
-    notes.push(newNote);
-    setNotes(notes);
-  };
-  
-  // Using index as key - BAD PRACTICE
-  const noteElements = notes.map((note, index) => {
-    // Nested ternary - CONFUSING
-    const categoryColor = note.category === 'work' 
-      ? (note.priority === 'high' ? '#ff0000' : '#ff6600')
-      : (note.category === 'personal' ? '#00ff00' : '#0066ff');
-    
-    return (
-      <div key={index} className="note-item">
-        <h3 style={{ color: categoryColor }}>{note.title}</h3>
-        <p>{note.content}</p>
-        <small>Created: {note.createdAt}</small>
-      </div>
-    );
-  });
-  
+  const handleCategoryChange = useCallback((e) => {
+    setSelectedCategory(e.target.value);
+  }, []);
+
   return (
     <div className="notes-list">
       <h2>Notes List</h2>
       
-      {/* Inline styles - BAD PRACTICE */}
-      <input 
-        ref={inputRef}
-        type="text" 
-        placeholder="Search notes..."
-        onChange={handleSearch}
-        style={{ 
-          padding: '10px',
-          width: '300px',
-          marginBottom: '20px',
-          borderRadius: '5px',
-          border: '1px solid #ccc'
-        }}
-      />
-      
-      {/* Select without label - ACCESSIBILITY ISSUE */}
-      <select 
-        value={selectedCategory}
-        onChange={(e) => setSelectedCategory(e.target.value)}
-        style={{ padding: '10px', marginLeft: '10px' }}
-      >
-        <option value="all">All</option>
-        <option value="work">Work</option>
-        <option value="personal">Personal</option>
-        <option value="shopping">Shopping</option>
-      </select>
-      
-      {/* Missing proper list markup */}
-      <div className="notes-container">
-        {noteElements}
+      <div className="notes-controls">
+        <input 
+          ref={inputRef}
+          type="text" 
+          placeholder="Search notes..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="search-input"
+          aria-label="Search notes"
+        />
+        
+        <label htmlFor="category-filter" className="visually-hidden">Filter by category</label>
+        <select 
+          id="category-filter"
+          value={selectedCategory}
+          onChange={handleCategoryChange}
+          className="category-select"
+        >
+          <option value="all">All</option>
+          <option value="work">Work</option>
+          <option value="personal">Personal</option>
+          <option value="shopping">Shopping</option>
+          <option value="ideas">Ideas</option>
+        </select>
       </div>
       
-      {/* Unused variable */}
-      const unusedValue = categoryFilter;
+      <div className="notes-container">
+        {filteredNotes.length === 0 ? (
+          <p className="no-notes">No notes found</p>
+        ) : (
+          filteredNotes.map((note) => (
+            <div key={note.id} className="note-item">
+              <h3 style={{ color: getCategoryColor(note.category, note.priority) }}>{note.title}</h3>
+              {note.content && <p>{note.content}</p>}
+              <small>Created: {new Date(note.createdAt).toLocaleDateString()}</small>
+              <div className="note-actions">
+                <button 
+                  onClick={() => onEdit(note)}
+                  className="btn-edit"
+                  aria-label={`Edit ${note.title}`}
+                >
+                  Edit
+                </button>
+                <button 
+                  onClick={() => onDelete(note.id)}
+                  className="btn-delete"
+                  aria-label={`Delete ${note.title}`}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
 
-// Note Editor with serious issues
-class NoteEditor extends React.Component {
-  constructor(props) {
-    super(props);
-    
-    this.state = {
-      title: '',
-      content: '',
-      category: 'personal',
-      tags: [],
-      isEditing: false,
-      editingNoteId: null,
-      charCount: 0
-    };
-    
-    // Binding in constructor - VERBOSE
-    this.handleSave = this.handleSave.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-    
-    // Unused instance variable
-    this.draftData = null;
-    this.lastSaved = null;
-  }
+// Note Editor - Converted to functional component
+function NoteEditor({ initialNote, onSave, onDelete, onCancel }) {
+  const [title, setTitle] = useState(initialNote?.title || '');
+  const [content, setContent] = useState(initialNote?.content || '');
+  const [category, setCategory] = useState(initialNote?.category || 'personal');
+  const [charCount, setCharCount] = useState(0);
+  const [errors, setErrors] = useState({});
   
-  componentDidMount() {
-    console.log('NoteEditor mounted');
-    // No validation of props
-    if (this.props.initialTitle) {
-      this.state.title = this.props.initialTitle;
+  const isEditing = Boolean(initialNote?.id);
+  
+  const handleTitleChange = useCallback((e) => {
+    const newTitle = e.target.value;
+    setTitle(newTitle);
+    setCharCount(newTitle.length);
+    if (errors.title) {
+      setErrors(prev => ({ ...prev, title: null }));
     }
-  }
+  }, [errors.title]);
   
-  componentDidUpdate(prevProps) {
-    // Comparing objects with == instead of deep comparison
-    if (prevProps.note !== this.props.note) {
-      console.log('Note changed');
-      // Direct state mutation - BAD
-      this.state.isEditing = true;
-      this.state.editingNoteId = this.props.note?.id;
-      this.state.title = this.props.note?.title || '';
-      this.state.content = this.props.note?.content || '';
-    }
-  }
+  const handleContentChange = useCallback((e) => {
+    setContent(e.target.value);
+  }, []);
   
-  handleSave() {
-    // No input validation
-    const noteData = {
-      title: this.state.title,
-      content: this.state.content,
-      category: this.state.category,
-      // Magic number
-      maxContentLength: 1000
-    };
+  const handleCategoryChange = useCallback((e) => {
+    setCategory(e.target.value);
+  }, []);
+  
+  const handleSave = useCallback(() => {
+    const newErrors = {};
     
-    // Not checking maxContentLength
-    if (noteData.content.length > noteData.maxContentLength) {
-      alert('Content too long!');
+    if (!title.trim()) {
+      newErrors.title = 'Title is required';
+    }
+    
+    if (title.length > 100) {
+      newErrors.title = 'Title must be less than 100 characters';
+    }
+    
+    if (content.length > 1000) {
+      newErrors.content = 'Content must be less than 1000 characters';
+    }
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
     
-    // Calling callback without proper error handling
-    if (this.props.onSave) {
-      this.props.onSave(noteData);
-    }
-    
-    // Not resetting form properly
-    this.state.title = '';
-    this.forceUpdate();
-  }
-  
-  handleDelete(noteId) {
-    // Silent deletion - no confirmation
-    if (this.props.onDelete) {
-      this.props.onDelete(noteId);
-    }
-    // No state update after delete
-  }
-  
-  // Unused method
-  duplicateNote = (note) => {
-    console.log('Duplicating note');
-    // Not implemented
-  };
-  
-  render() {
-    // Unused variable
-    const totalNotes = 0;
-    
-    // Creating new function on every render - PERFORMANCE ISSUE
-    const handleTitleChange = (e) => {
-      this.state.title = e.target.value;
-      this.setState({ charCount: e.target.value.length });
+    const noteData = {
+      title: title.trim(),
+      content: content.trim(),
+      category
     };
     
-    return (
-      <div className="note-editor" style={{ padding: '20px' }}>
-        <h2 style={{ color: '#333' }}>Note Editor</h2>
-        
-        {/* Inline styles everywhere */}
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px' }}>Title</label>
-          <input 
-            type="text"
-            value={this.state.title}
-            onChange={handleTitleChange}
-            placeholder="Enter note title..."
-            style={{ 
-              width: '100%',
-              padding: '12px',
-              fontSize: '16px',
-              borderRadius: '4px',
-              border: '1px solid #ddd'
-            }}
-          />
-          <small>{this.state.charCount} characters</small>
-        </div>
-        
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px' }}>Content</label>
-          <textarea
-            value={this.state.content}
-            onChange={(e) => {
-              // Inline state mutation - BAD
-              this.state.content = e.target.value;
-              this.forceUpdate();
-            }}
-            placeholder="Enter note content..."
-            rows="5"
-            style={{ 
-              width: '100%',
-              padding: '12px',
-              fontSize: '16px',
-              borderRadius: '4px',
-              border: '1px solid #ddd',
-              resize: 'vertical'
-            }}
-          />
-        </div>
-        
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px' }}>Category</label>
-          {/* Missing proper select accessibility */}
-          <select 
-            value={this.state.category}
-            onChange={(e) => {
-              this.state.category = e.target.value;
-              this.forceUpdate();
-            }}
-            style={{ 
-              padding: '10px',
-              fontSize: '16px',
-              borderRadius: '4px',
-              border: '1px solid #ddd'
-            }}
-          >
-            <option value="work">Work</option>
-            <option value="personal">Personal</option>
-            <option value="shopping">Shopping</option>
-            <option value="ideas">Ideas</option>
-          </select>
-        </div>
-        
-        {/* Duplicate styling - NOT DRY */}
-        <button 
-          onClick={this.handleSave}
-          style={{ 
-            padding: '12px 24px',
-            fontSize: '16px',
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            marginRight: '10px'
-          }}
-        >
-          Save Note
-        </button>
-        
-        <button 
-          onClick={() => this.handleDelete(this.state.editingNoteId)}
-          style={{ 
-            padding: '12px 24px',
-            fontSize: '16px',
-            backgroundColor: '#f44336',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          Delete
-        </button>
-        
-        {/* Hardcoded date - should be dynamic */}
-        <p style={{ marginTop: '20px', color: '#666' }}>Last edited: 2024-01-01</p>
-      </div>
-    );
-  }
-}
-
-// Stats component with issues
-function NotesStats() {
-  const [stats, setStats] = useState({ total: 0, categories: {} });
-  
-  useEffect(() => {
-    // No cleanup
-    const timer = setInterval(() => {
-      console.log('Updating stats...');
-    }, 3000);
-  });
-  
-  // Deeply nested rendering logic
-  const renderStats = () => {
-    if (stats.total > 0) {
-      if (stats.categories.work) {
-        return (
-          <div>
-            {stats.total > 10 ? (
-              stats.total > 50 ? (
-                <p>Wow, you have {stats.total} notes!</p>
-              ) : (
-                <p>You have {stats.total} notes</p>
-              )
-            ) : (
-              <p>You have few notes</p>
-            )}
-          </div>
-        );
-      } else {
-        return <p>No work notes yet</p>;
-      }
-    } else {
-      return <p>No notes yet. Start creating!</p>;
+    const validation = validateNote(noteData);
+    if (!validation.valid) {
+      setErrors({ general: validation.error });
+      return;
     }
-  };
+    
+    onSave(noteData);
+    
+    // Reset form
+    setTitle('');
+    setContent('');
+    setCategory('personal');
+    setCharCount(0);
+    setErrors({});
+  }, [title, content, category, onSave]);
   
+  const handleDelete = useCallback(() => {
+    if (initialNote?.id && onDelete) {
+      if (window.confirm('Are you sure you want to delete this note?')) {
+        onDelete(initialNote.id);
+      }
+    }
+  }, [initialNote, onDelete]);
+
   return (
-    <div className="notes-stats">
-      <h3>Statistics</h3>
-      {renderStats()}
-      {/* Using dangerouslySetInnerHTML - SECURITY RISK */}
-      <div dangerouslySetInnerHTML={{ __html: '<p>Stats loaded</p>' }} />
+    <div className="note-editor">
+      <h2>{isEditing ? 'Edit Note' : 'Note Editor'}</h2>
+      
+      {errors.general && (
+        <div className="error-message" role="alert">
+          {errors.general}
+        </div>
+      )}
+      
+      <div className="form-group">
+        <label htmlFor="note-title">Title</label>
+        <input 
+          id="note-title"
+          type="text"
+          value={title}
+          onChange={handleTitleChange}
+          placeholder="Enter note title..."
+          className={errors.title ? 'input-error' : ''}
+          aria-invalid={errors.title ? 'true' : 'false'}
+        />
+        {errors.title && <span className="error-text">{errors.title}</span>}
+        <small className="char-count">{charCount}/100 characters</small>
+      </div>
+      
+      <div className="form-group">
+        <label htmlFor="note-content">Content</label>
+        <textarea
+          id="note-content"
+          value={content}
+          onChange={handleContentChange}
+          placeholder="Enter note content..."
+          rows="5"
+          className={errors.content ? 'input-error' : ''}
+          aria-invalid={errors.content ? 'true' : 'false'}
+        />
+        {errors.content && <span className="error-text">{errors.content}</span>}
+      </div>
+      
+      <div className="form-group">
+        <label htmlFor="note-category">Category</label>
+        <select 
+          id="note-category"
+          value={category}
+          onChange={handleCategoryChange}
+        >
+          <option value="work">Work</option>
+          <option value="personal">Personal</option>
+          <option value="shopping">Shopping</option>
+          <option value="ideas">Ideas</option>
+        </select>
+      </div>
+      
+      <div className="button-group">
+        <button 
+          onClick={handleSave}
+          className="btn-primary"
+        >
+          {isEditing ? 'Update Note' : 'Save Note'}
+        </button>
+        
+        {isEditing && (
+          <button 
+            onClick={handleDelete}
+            className="btn-danger"
+          >
+            Delete
+          </button>
+        )}
+        
+        {onCancel && (
+          <button 
+            onClick={onCancel}
+            className="btn-secondary"
+          >
+            Cancel
+          </button>
+        )}
+      </div>
+      
+      <p className="last-edited">Last edited: {new Date().toLocaleDateString()}</p>
     </div>
   );
 }
 
-// Main App Component with context issues
+// Notes Stats Component - Fixed
+function NotesStats({ notes }) {
+  const stats = useMemo(() => {
+    const categoryCount = {};
+    let total = notes.length;
+    
+    notes.forEach(note => {
+      categoryCount[note.category] = (categoryCount[note.category] || 0) + 1;
+    });
+    
+    return { total, categories: categoryCount };
+  }, [notes]);
+  
+  const getNoteCountMessage = () => {
+    if (stats.total === 0) {
+      return 'No notes yet. Start creating!';
+    }
+    if (stats.total > 50) {
+      return `Wow, you have ${stats.total} notes!`;
+    }
+    if (stats.total > 10) {
+      return `You have ${stats.total} notes`;
+    }
+    return `You have few notes`;
+  };
+
+  return (
+    <div className="notes-stats">
+      <h3>Statistics</h3>
+      <p>{getNoteCountMessage()}</p>
+      
+      <div className="stats-grid">
+        <div className="stat-item">
+          <span className="stat-label">Total Notes:</span>
+          <span className="stat-value">{stats.total}</span>
+        </div>
+        {Object.entries(stats.categories).map(([category, count]) => (
+          <div key={category} className="stat-item">
+            <span className="stat-label">{category.charAt(0).toUpperCase() + category.slice(1)}:</span>
+            <span className="stat-value">{count}</span>
+          </div>
+        ))}
+      </div>
+      
+      <p className="stats-loaded">Stats loaded</p>
+    </div>
+  );
+}
+
+// Quick Add Button Component - Extracted to avoid inline component issues
+function QuickAddButton({ onClick }) {
+  return (
+    <button 
+      onClick={onClick}
+      className="quick-add-button"
+      aria-label="Add new note"
+    >
+      +
+    </button>
+  );
+}
+
+// Main App Component - Fixed
 function App() {
   const [notes, setNotes] = useState([]);
   const [currentView, setCurrentView] = useState('list');
   const [theme, setTheme] = useState('light');
-  const inputRef = useRef(null);
+  const [editingNote, setEditingNote] = useState(null);
+  const [error, setError] = useState(null);
   
-  // Using var - SCOPE ISSUE
-  var tempNotes = [];
-  
+  // Load notes from localStorage with proper error handling
   useEffect(() => {
-    // Loading from localStorage without error handling
-    const savedNotes = localStorage.getItem('notes');
-    if (savedNotes) {
-      // Using JSON.parse without try-catch
-      const parsed = JSON.parse(savedNotes);
-      setNotes(parsed);
+    try {
+      const savedNotes = localStorage.getItem('notes');
+      if (savedNotes) {
+        const parsed = JSON.parse(savedNotes);
+        if (Array.isArray(parsed)) {
+          setNotes(parsed);
+        }
+      }
+    } catch (err) {
+      console.error('Error loading notes:', err);
+      setError('Failed to load notes from storage');
     }
-    
-    // No cleanup
-    window.addEventListener('resize', () => {
-      console.log('Window resized');
-    });
   }, []);
   
-  // Saving to localStorage on every change - INEFFICIENT
+  // Save notes to localStorage
   useEffect(() => {
-    // JSON.stringify without validation
-    localStorage.setItem('notes', JSON.stringify(notes));
-  });
-  
-  // Function with too many parameters - CODE SMELL
-  const addNoteWithValidation = (title, content, category, tags, priority, dueDate) => {
-    // No parameter validation
+    try {
+      localStorage.setItem('notes', JSON.stringify(notes));
+    } catch (err) {
+      console.error('Error saving notes:', err);
+      setError('Failed to save notes');
+    }
+  }, [notes]);
+
+  // Add note with proper immutability
+  const addNote = useCallback((title, content, category) => {
     const newNote = {
       id: Date.now(),
       title,
       content,
       category,
-      tags,
-      priority,
-      dueDate,
-      createdAt: new Date().getTime()
+      priority: notes.length === 0 ? 'high' : 'normal',
+      createdAt: Date.now()
     };
     
-    // Direct state mutation
-    notes.push(newNote);
-    setNotes(notes);
-    
-    return newNote;
-  };
-  
-  const deleteNote = (noteId) => {
-    // Missing null check
-    const index = notes.findIndex(note => note.id == noteId);
-    if (index > -1) {
-      // Mutation instead of filter
-      notes.splice(index, 1);
-      setNotes(notes);
+    const validation = validateNote(newNote);
+    if (!validation.valid) {
+      setError(validation.error);
+      return null;
     }
-  };
+    
+    setNotes(prevNotes => [...prevNotes, newNote]);
+    return newNote;
+  }, [notes.length]);
   
-  const updateNote = (noteId, updates) => {
-    // Not creating new array - MUTATION
-    notes.forEach((note, index) => {
-      if (note.id === noteId) {
-        // Merging objects incorrectly
-        notes[index] = { ...note, updates };
-      }
-    });
-    setNotes(notes);
-  };
+  // Update note with proper immutability
+  const updateNote = useCallback((noteId, updates) => {
+    setNotes(prevNotes => 
+      prevNotes.map(note => 
+        note.id === noteId ? { ...note, ...updates } : note
+      )
+    );
+  }, []);
   
-  // Long function with nested conditionals - HARD TO TEST
-  const getFilteredNotes = (filter) => {
-    let result = notes;
+  // Delete note with proper immutability
+  const deleteNote = useCallback((noteId) => {
+    setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId));
+  }, []);
+  
+  // Handle save from editor
+  const handleSaveNote = useCallback((noteData) => {
+    if (editingNote?.id) {
+      updateNote(editingNote.id, noteData);
+    } else {
+      addNote(noteData.title, noteData.content, noteData.category);
+    }
+    setEditingNote(null);
+    setCurrentView('list');
+  }, [editingNote, updateNote, addNote]);
+  
+  // Handle edit initiation
+  const handleEditNote = useCallback((note) => {
+    setEditingNote(note);
+    setCurrentView('editor');
+  }, []);
+  
+  // Handle delete from editor
+  const handleDeleteFromEditor = useCallback((noteId) => {
+    deleteNote(noteId);
+    setEditingNote(null);
+    setCurrentView('list');
+  }, [deleteNote]);
+  
+  // Handle cancel
+  const handleCancel = useCallback(() => {
+    setEditingNote(null);
+    setCurrentView('list');
+  }, []);
+  
+  // Toggle theme
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  }, []);
+
+  // Filter notes function - simplified
+  const getFilteredNotes = useCallback((filter) => {
+    let result = [...notes];
     
     if (filter.category && filter.category !== 'all') {
-      result = result.filter(note => {
-        return note.category === filter.category;
-      });
+      result = result.filter(note => note.category === filter.category);
     }
     
     if (filter.search) {
-      result = result.filter(note => {
-        if (note.title.toLowerCase().includes(filter.search.toLowerCase())) {
-          return true;
-        }
-        if (note.content.toLowerCase().includes(filter.search.toLowerCase())) {
-          return true;
-        }
-        return false;
-      });
+      const searchLower = filter.search.toLowerCase();
+      result = result.filter(note => 
+        note.title.toLowerCase().includes(searchLower) ||
+        (note.content && note.content.toLowerCase().includes(searchLower))
+      );
     }
     
     if (filter.priority) {
-      result = result.filter(note => {
-        const priorityMatch = note.priority === filter.priority;
-        return priorityMatch;
-      });
+      result = result.filter(note => note.priority === filter.priority);
     }
     
     if (filter.tags && filter.tags.length > 0) {
-      result = result.filter(note => {
-        let hasTag = false;
-        note.tags.forEach(tag => {
-          if (filter.tags.includes(tag)) {
-            hasTag = true;
-          }
-        });
-        return hasTag;
-      });
+      result = result.filter(note => 
+        note.tags && filter.tags.some(tag => note.tags.includes(tag))
+      );
     }
     
     return result;
-  };
-  
-  // Inline component definition - MAINTENANCE ISSUE
-  const QuickAddButton = ({ onClick }) => (
-    <button 
-      onClick={onClick}
-      style={{
-        position: 'fixed',
-        bottom: '20px',
-        right: '20px',
-        width: '60px',
-        height: '60px',
-        borderRadius: '50%',
-        backgroundColor: '#2196F3',
-        color: 'white',
-        border: 'none',
-        fontSize: '24px',
-        cursor: 'pointer',
-        boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
-      }}
-    >
-      +
-    </button>
-  );
-  
+  }, [notes]);
+
+  const contextValue = useMemo(() => ({
+    notes,
+    addNote,
+    getFilteredNotes
+  }), [notes, addNote, getFilteredNotes]);
+
   return (
-    <div className="app" style={{ 
-      minHeight: '100vh',
-      padding: '20px',
-      backgroundColor: theme === 'light' ? '#fff' : '#333'
-    }}>
-      {/* Context without Provider - WILL FAIL */}
-      <NotesContext.Provider value={{ notes, addNote: addNoteWithValidation }}>
-        <header style={{ 
-          padding: '20px',
-          borderBottom: '2px solid #eee',
-          marginBottom: '20px'
-        }}>
-          <h1 style={{ fontSize: '32px', color: theme === 'light' ? '#333' : '#fff' }}>
-            Notes App
-          </h1>
+    <NotesContext.Provider value={contextValue}>
+      <div className={`app app--${theme}`}>
+        <header className="header">
+          <h1 className="header-title">Notes App</h1>
           
-          {/* Inline style */}
-          <div style={{ marginTop: '10px' }}>
+          <div className="header-controls">
             <button 
               onClick={() => setCurrentView('list')}
-              style={{ 
-                padding: '10px 20px',
-                marginRight: '10px',
-                backgroundColor: currentView === 'list' ? '#4CAF50' : '#ddd',
-                color: currentView === 'list' ? 'white' : 'black',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
+              className={`nav-button ${currentView === 'list' ? 'nav-button--active' : ''}`}
             >
               List View
             </button>
             
             <button 
               onClick={() => setCurrentView('editor')}
-              style={{ 
-                padding: '10px 20px',
-                marginRight: '10px',
-                backgroundColor: currentView === 'editor' ? '#4CAF50' : '#ddd',
-                color: currentView === 'editor' ? 'white' : 'black',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
+              className={`nav-button ${currentView === 'editor' ? 'nav-button--active' : ''}`}
             >
               Editor
             </button>
             
             <button 
               onClick={() => setCurrentView('stats')}
-              style={{ 
-                padding: '10px 20px',
-                backgroundColor: currentView === 'stats' ? '#4CAF50' : '#ddd',
-                color: currentView === 'stats' ? 'white' : 'black',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
+              className={`nav-button ${currentView === 'stats' ? 'nav-button--active' : ''}`}
             >
               Statistics
+            </button>
+            
+            <button 
+              onClick={toggleTheme}
+              className="theme-toggle"
+              aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+            >
+              {theme === 'light' ? '🌙' : '☀️'}
             </button>
           </div>
         </header>
         
-        <main>
+        {error && (
+          <div className="error-banner" role="alert">
+            {error}
+            <button onClick={() => setError(null)} aria-label="Dismiss error">×</button>
+          </div>
+        )}
+        
+        <main className="main-content">
           {currentView === 'list' && (
             <NotesList 
               notes={notes}
               onDelete={deleteNote}
+              onEdit={handleEditNote}
             />
           )}
           
           {currentView === 'editor' && (
             <NoteEditor 
-              onSave={(note) => addNoteWithValidation(
-                note.title,
-                note.content,
-                note.category,
-                [],
-                'normal',
-                null
-              )}
-              onDelete={deleteNote}
+              initialNote={editingNote}
+              onSave={handleSaveNote}
+              onDelete={handleDeleteFromEditor}
+              onCancel={handleCancel}
             />
           )}
           
@@ -619,20 +555,8 @@ function App() {
         </main>
         
         <QuickAddButton onClick={() => setCurrentView('editor')} />
-        
-        {/* Unused code block */}
-        {false && (
-          <div>
-            <h2>This will never render</h2>
-            {unusedHelperFunction()}
-          </div>
-        )}
-        
-        {/* TODO: Add theme toggle functionality */}
-        {/* FIXME: Fix localStorage error handling */}
-        {/* HACK: Temporary fix for duplicate notes */}
-      </NotesContext.Provider>
-    </div>
+      </div>
+    </NotesContext.Provider>
   );
 }
 
