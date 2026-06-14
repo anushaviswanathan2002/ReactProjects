@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1781419198730" clover="3.2.0">
+  <project timestamp="1781419198730" name="All files">
+    <metrics statements="40" coveredstatements="37" conditionals="18" coveredconditionals="15" methods="13" coveredmethods="13" elements="71" coveredelements="65" complexity="0" loc="40" ncloc="40" packages="1" files="2" classes="2"/>
+    <file name="App.js" path="/home/user/ReactProjects/src/App.js">
+      <metrics statements="38" coveredstatements="37" conditionals="18" coveredconditionals="15" methods="13" coveredmethods="13"/>
+      <line num="7" count="21" type="stmt"/>
+      <line num="10" count="21" type="cond" truecount="1" falsecount="1"/>
+      <line num="12" count="21" type="stmt"/>
+      <line num="17" count="21" type="stmt"/>
+      <line num="18" count="21" type="stmt"/>
+      <line num="21" count="21" type="stmt"/>
+      <line num="22" count="21" type="stmt"/>
+      <line num="23" count="21" type="stmt"/>
+      <line num="24" count="21" type="stmt"/>
+      <line num="28" count="21" type="stmt"/>
+      <line num="36" count="7" type="cond" truecount="2" falsecount="0"/>
+      <line num="37" count="1" type="stmt"/>
+      <line num="38" count="1" type="stmt"/>
+      <line num="41" count="6" type="stmt"/>
+      <line num="48" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="49" count="1" type="stmt"/>
+      <line num="52" count="1" type="stmt"/>
+      <line num="59" count="2" type="cond" truecount="1" falsecount="1"/>
+      <line num="60" count="2" type="stmt"/>
+      <line num="67" count="1" type="stmt"/>
+      <line num="68" count="1" type="cond" truecount="1" falsecount="1"/>
+      <line num="69" count="0" type="stmt"/>
+      <line num="72" count="1" type="stmt"/>
+      <line num="79" count="31" type="stmt"/>
+      <line num="81" count="31" type="cond" truecount="2" falsecount="0"/>
+      <line num="82" count="2" type="stmt"/>
+      <line num="84" count="29" type="cond" truecount="2" falsecount="0"/>
+      <line num="85" count="1" type="stmt"/>
+      <line num="87" count="28" type="cond" truecount="2" falsecount="0"/>
+      <line num="88" count="13" type="stmt"/>
+      <line num="90" count="15" type="cond" truecount="2" falsecount="0"/>
+      <line num="91" count="2" type="stmt"/>
+      <line num="93" count="13" type="stmt"/>
+      <line num="97" count="31" type="stmt"/>
+      <line num="98" count="31" type="stmt"/>
+      <line num="100" count="31" type="stmt"/>
+      <line num="114" count="10" type="stmt"/>
+      <line num="157" count="1" type="stmt"/>
+    </file>
+    <file name="index.js" path="/home/user/ReactProjects/src/index.js">
+      <metrics statements="2" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <line num="6" count="0" type="stmt"/>
+      <line num="7" count="0" type="stmt"/>
+    </file>
+  </project>
+</coverage>
