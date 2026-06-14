@@ -1,72 +1,195 @@
-/* CSS with lots of issues */
+/* Memory Game CSS - Full of issues for testing */
 
-/* Selector specificity problems */
+/* ISSUE 1: Duplicate selectors */
 .App {
   text-align: center;
 }
 
-.App .App-header {
-  background-color: #222;
+.App {
+  background-color: #f5f5f5;
+}
+
+.App {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vpx);
-  color: white;
 }
 
-/* Duplicate properties */
-.App-header {
-  background-color: #333;
-  padding: 20px;
-  /* This will be overridden */
-  background-color: #222;
+/* ISSUE 2: Overly specific selectors */
+div.App div.memory-game div.card {
+  cursor: pointer;
 }
 
-/* Unused CSS class */
-.unused-class {
-  color: red;
-  font-size: 20px;
+/* ISSUE 3: Deep nesting - hard to maintain */
+.memory-game .card .card-inner {
+  width: 100%;
+  height: 100%;
 }
 
-/* Important declarations everywhere - BAD PRACTICE */
-.counter-container {
-  margin: 20px !important;
-  padding: 20px !important;
+/* ISSUE 4: Using !important everywhere - BAD PRACTICE */
+.card {
+  margin: 10px !important;
+  padding: 10px !important;
+  border-radius: 8px !important;
 }
 
-/* Deep nesting - hard to maintain */
-.counter-container .counter-container div button {
-  border-radius: 5px;
-}
-
-/* Using px for everything - not responsive */
+/* ISSUE 5: Magic numbers in CSS */
 button {
-  font-size: 16px;
-  padding: 10px;
+  padding: 10px 20px;
   margin: 5px;
+  font-size: 16px;
 }
 
-/* Magic numbers in CSS */
-div {
-  max-width: 1000px;
+/* ISSUE 6: Using px for everything - not responsive */
+h1 {
+  font-size: 32px;
+  margin: 10px;
+  padding: 15px;
 }
 
-/* Overly specific selectors */
-div.counter-container div div button.increment-button {
-  background-color: green;
+/* ISSUE 7: Unused CSS class */
+.unused-leaderboard-style {
+  background-color: red;
+  border: 1px solid blue;
 }
 
-/* Duplicate rules */
-p {
+/* ISSUE 8: Duplicate properties */
+.leaderboard {
+  background-color: #fff;
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+/* ISSUE 9: Conflicting selectors */
+ul li {
   color: #333;
 }
 
-p {
+li {
   color: #444;
 }
 
-p {
+ul li {
   color: #555;
+}
+
+/* ISSUE 10: Selector specificity war */
+.App-header h1 {
+  color: #333;
+}
+
+.App-header > h1 {
+  color: #222;
+}
+
+div.App-header h1 {
+  color: #111;
+}
+
+/* ISSUE 11: Redundant styles */
+button {
+  cursor: pointer;
+  cursor: pointer;
+  cursor: pointer;
+}
+
+/* ISSUE 12: Hard-coded colors instead of variables */
+.card {
+  background-color: #4169E1;
+  border-color: #333333;
+}
+
+.card.flipped {
+  background-color: #87CEEB;
+}
+
+/* ISSUE 13: Inefficient selector */
+div.memory-game > div > div > div.card {
+  display: flex;
+}
+
+/* ISSUE 14: Z-index magic number */
+.card.flipped {
+  z-index: 100;
+}
+
+/* ISSUE 15: Unused media query */
+@media (max-width: 500px) {
+  .old-mobile-style {
+    display: none;
+  }
+}
+
+/* ISSUE 16: Inconsistent naming */
+.cardContainer {
+  display: flex;
+}
+
+.card_container {
+  margin: 10px;
+}
+
+.cardcontainer {
+  padding: 5px;
+}
+
+/* ISSUE 17: Missing fallback for font-family */
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* ISSUE 18: Vendor prefixes not needed */
+.card {
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+}
+
+/* ISSUE 19: Duplicate rule with different specificity */
+.leaderboard ul li {
+  list-style: none;
+  padding: 5px;
+}
+
+.leaderboard ul {
+  list-style: none;
+  padding: 5px;
+}
+
+/* ISSUE 20: Unused pseudo-class styles */
+button:hover {
+  transform: scale(1.05);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+button:focus {
+  outline: 2px solid blue;
+}
+
+/* ISSUE 21: Redundant wrapper selector */
+.App-header .App-header {
+  background-color: #222;
+}
+
+/* ISSUE 22: Confusing comments */
+.button-group {
+  margin-top: 20px;
+}
+
+/* The button group is above the grid */
+
+/* ISSUE 23: Empty rule */
+.memory-game {
+}
+
+/* ISSUE 24: Invalid CSS property value */
+h2 {
+  font-size: -20px;
+  margin: abc;
+}
+
+/* ISSUE 25: Missing proper reset */
+* {
+  box-sizing: content-box;
 }
