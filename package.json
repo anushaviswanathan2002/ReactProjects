@@ -1,5 +1,5 @@
 {
-  "name": "counter-app-with-issues",
+  "name": "todo-app-with-issues",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
