@@ -1,0 +1,128 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  min-height: 100vh;
+}
+
+.app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 48px 56px;
+  text-align: center;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+  min-width: 340px;
+}
+
+.title {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 36px;
+}
+
+.count-display {
+  font-size: 7rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 40px;
+  transition: color 0.3s ease, transform 0.1s ease;
+  user-select: none;
+}
+
+.count-display.positive {
+  color: #4ade80;
+  text-shadow: 0 0 30px rgba(74, 222, 128, 0.4);
+}
+
+.count-display.negative {
+  color: #f87171;
+  text-shadow: 0 0 30px rgba(248, 113, 113, 0.4);
+}
+
+.count-display.zero {
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
+}
+
+.buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn {
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.1s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  outline: none;
+}
+
+.btn:active {
+  transform: scale(0.93);
+}
+
+.btn-decrement,
+.btn-increment {
+  width: 64px;
+  height: 64px;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.btn-decrement {
+  background: linear-gradient(135deg, #f87171, #ef4444);
+  color: white;
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.35);
+}
+
+.btn-decrement:hover {
+  box-shadow: 0 10px 28px rgba(239, 68, 68, 0.55);
+  opacity: 0.92;
+}
+
+.btn-increment {
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  color: white;
+  box-shadow: 0 8px 20px rgba(34, 197, 94, 0.35);
+}
+
+.btn-increment:hover {
+  box-shadow: 0 10px 28px rgba(34, 197, 94, 0.55);
+  opacity: 0.92;
+}
+
+.btn-reset {
+  padding: 0 24px;
+  height: 48px;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-reset:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: white;
+}
