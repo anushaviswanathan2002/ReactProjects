@@ -561,3 +561,4 @@ function App() {
 }
 
 export default App;
+export { validateNote, getCategoryColor, NotesList, NoteEditor, NotesStats, QuickAddButton };
