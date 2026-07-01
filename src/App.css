@@ -1,72 +1,106 @@
-/* CSS with lots of issues */
-
-/* Selector specificity problems */
 .App {
-  text-align: center;
-}
-
-.App .App-header {
-  background-color: #222;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vpx);
-  color: white;
+  text-align: center;
+  color: #1f2933;
 }
 
-/* Duplicate properties */
 .App-header {
-  background-color: #333;
-  padding: 20px;
-  /* This will be overridden */
-  background-color: #222;
+  background-color: #1f2937;
+  color: #ffffff;
+  padding: 1.5rem;
 }
 
-/* Unused CSS class */
-.unused-class {
-  color: red;
-  font-size: 20px;
+.App-header button {
+  margin-top: 1rem;
 }
 
-/* Important declarations everywhere - BAD PRACTICE */
-.counter-container {
-  margin: 20px !important;
-  padding: 20px !important;
+.app-content {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
 }
 
-/* Deep nesting - hard to maintain */
-.counter-container .counter-container div button {
-  border-radius: 5px;
+.counter-container,
+.history-section {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(15, 23, 42, 0.08);
+  padding: 1.5rem;
 }
 
-/* Using px for everything - not responsive */
+.history-section {
+  margin-top: 1.5rem;
+}
+
+.counter-title,
+.history-section h2 {
+  margin-top: 0;
+}
+
+.counter-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.counter-value {
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.history-preview,
+.history-list,
+.button-row,
+.input-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.history-chip,
+.history-item {
+  background-color: #e5eefc;
+  border-radius: 999px;
+  padding: 0.5rem 0.85rem;
+}
+
+.status-message {
+  color: #52606d;
+  margin: 0;
+}
+
+button,
+input {
+  font: inherit;
+}
+
 button {
-  font-size: 16px;
-  padding: 10px;
-  margin: 5px;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.8rem 1.25rem;
+  cursor: pointer;
+  background-color: #2563eb;
+  color: #ffffff;
 }
 
-/* Magic numbers in CSS */
-div {
-  max-width: 1000px;
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
-/* Overly specific selectors */
-div.counter-container div div button.increment-button {
-  background-color: green;
+input {
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #cbd2d9;
+  border-radius: 0.5rem;
 }
 
-/* Duplicate rules */
-p {
-  color: #333;
+.input-row label {
+  align-self: center;
+  font-weight: 600;
 }
 
-p {
-  color: #444;
-}
-
-p {
-  color: #555;
+.counter-hidden-message {
+  font-size: 1.1rem;
+  margin: 0 0 1.5rem;
 }

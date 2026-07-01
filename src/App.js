@@ -1,260 +1,210 @@
-import React, { useState, useEffect, Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import './App.css';
 
-// Counter component with lots of issues
+const MAX_COUNT = 100;
+const MIN_COUNT = -50;
+
 class Counter extends Component {
   constructor(props) {
     super(props);
-    // Direct mutation of props - BAD
-    this.props.initialValue = this.props.initialValue || 0;
-    
+
+    const initialCount = Number.isFinite(props.initialValue) ? props.initialValue : 0;
+
     this.state = {
-      count: this.props.initialValue,
-      history: [],
-      // Unused state variable
-      unusedData: null,
-      lastUpdated: Date.now()
+      count: initialCount,
+      history: [initialCount],
     };
-    
-    // Using var instead of let/const - SCOPE ISSUES
-    var timerId = null;
-    this.timerId = timerId;
-    
-    // Magic numbers everywhere
-    this.maxCount = 100;
-    this.minCount = -50;
   }
-  
+
   componentDidMount() {
-    console.log('Counter mounted');
-    // Memory leak - not cleaning up interval
-    this.timerId = setInterval(() => {
-      // Mutating state directly
-      this.state.lastUpdated = Date.now();
-      this.forceUpdate();
-    }, 1000);
-    
-    // Creating function inside render equivalent
-    const handleClick = () => {
-      console.log('clicked');
-    };
+    this.props.onHistoryChange(this.state.history);
   }
-  
-  componentWillUnmount() {
-    // Forgetting to clear interval
-    // FIXME: Should clear interval here
+
+  componentDidUpdate(_, prevState) {
+    if (prevState.history !== this.state.history) {
+      this.props.onHistoryChange(this.state.history);
+    }
   }
-  
+
+  updateCount = (nextCount) => {
+    this.setState((prevState) => ({
+      count: nextCount,
+      history: [...prevState.history, nextCount],
+    }));
+  };
+
   increment = () => {
-    // Using == instead of === - TYPE COERCION
-    if (this.state.count == this.maxCount) {
-      alert('Maximum reached!');
+    this.setState((prevState) => {
+      if (prevState.count >= MAX_COUNT) {
+        return null;
+      }
+
+      const nextCount = prevState.count + 1;
+
+      return {
+        count: nextCount,
+        history: [...prevState.history, nextCount],
+      };
+    });
+  };
+
+  decrement = () => {
+    this.setState((prevState) => {
+      if (prevState.count <= MIN_COUNT) {
+        return null;
+      }
+
+      const nextCount = prevState.count - 1;
+
+      return {
+        count: nextCount,
+        history: [...prevState.history, nextCount],
+      };
+    });
+  };
+
+  reset = () => {
+    const initialCount = Number.isFinite(this.props.initialValue) ? this.props.initialValue : 0;
+    this.setState({
+      count: initialCount,
+      history: [initialCount],
+    });
+  };
+
+  handleInputChange = (event) => {
+    const { value } = event.target;
+
+    if (value === '') {
       return;
     }
-    
-    // Direct state mutation - BAD
-    this.state.count += 1;
-    this.state.history.push(this.state.count);
-    
-    // Using setState incorrectly
-    this.setState({ count: this.state.count });
-  };
-  
-  decrement = () => {
-    // No input validation
-    if (this.state.count <= this.minCount) {
-      return; // Silent failure
+
+    const parsedValue = Number.parseInt(value, 10);
+
+    if (Number.isNaN(parsedValue)) {
+      return;
     }
-    
-    // Another mutation
-    const newCount = this.state.count;
-    newCount -= 1;
-    this.state.count = newCount;
-    
-    this.setState(this.state);
+
+    const boundedValue = Math.min(MAX_COUNT, Math.max(MIN_COUNT, parsedValue));
+    this.updateCount(boundedValue);
   };
-  
-  reset = () => {
-    // Not handling reset properly
-    this.state.history = [];
-    this.forceUpdate();
-  };
-  
-  setValue = (value) => {
-    // No input validation
-    this.state.count = parseInt(value);
-    this.setState(this.state);
-  };
-  
-  // Deeply nested ternary - HARD TO READ
+
   getStatusMessage = () => {
-    return this.state.count > 50 
-      ? (this.state.count > 80 ? 'Excellent!' : 'Good progress!') 
-      : (this.state.count > 0 ? 'Keep going!' : (this.state.count < 0 ? 'Negative territory' : 'Start here'));
+    const { count } = this.state;
+
+    if (count > 80) {
+      return 'Excellent!';
+    }
+
+    if (count > 50) {
+      return 'Good progress!';
+    }
+
+    if (count > 0) {
+      return 'Keep going!';
+    }
+
+    if (count < 0) {
+      return 'Negative territory';
+    }
+
+    return 'Start here';
   };
-  
+
   render() {
-    console.log('Rendering counter');
-    
-    // Unused variable
-    const unusedVar = 'this is not used';
-    
-    // Creating new function on every render - PERFORMANCE ISSUE
-    const handleInputChange = (e) => {
-      this.setValue(e.target.value);
-    };
-    
+    const { count, history } = this.state;
+    const recentHistory = history.slice(-5);
+
     return (
-      <div className="counter-container" style={{ padding: '20px', textAlign: 'center' }}>
-        {/* Inline styles everywhere - BAD PRACTICE */}
-        <h1 style={{ color: 'blue', fontSize: '36px', marginBottom: '20px' }}>Counter App</h1>
-        
-        <div style={{ backgroundColor: '#f0f0f0', padding: '30px', borderRadius: '10px' }}>
-          {/* Accessibility issues - missing aria-labels */}
-          <p style={{ fontSize: '48px', fontWeight: 'bold', margin: '20px 0' }}>
-            {this.state.count}
+      <section className="counter-container">
+        <h2 className="counter-title">Counter App</h2>
+
+        <div className="counter-panel">
+          <p className="counter-value" aria-live="polite">
+            {count}
           </p>
-          
-          {/* Using index as key - BAD */}
-          <div style={{ margin: '10px 0' }}>
-            {this.state.history.slice(-5).map((item, index) => (
-              <span key={index} style={{ margin: '0 5px' }}>{item}</span>
+
+          <div className="history-preview" aria-label="Recent counter history">
+            {recentHistory.map((item, index) => (
+              <span key={`${item}-${history.length - recentHistory.length + index}`} className="history-chip">
+                {item}
+              </span>
             ))}
           </div>
-          
-          <p style={{ color: '#666' }}>{this.getStatusMessage()}</p>
-          
-          {/* Duplicate button code - NOT DRY */}
-          <button 
-            onClick={this.increment}
-            style={{ 
-              padding: '15px 30px', 
-              fontSize: '20px', 
-              margin: '5px',
-              cursor: 'pointer',
-              backgroundColor: '#4CAF50',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px'
-            }}
-          >
-            + Increment
-          </button>
-          
-          <button 
-            onClick={this.decrement}
-            style={{ 
-              padding: '15px 30px', 
-              fontSize: '20px', 
-              margin: '5px',
-              cursor: 'pointer',
-              backgroundColor: '#f44336',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px'
-            }}
-          >
-            - Decrement
-          </button>
-          
-          <button 
-            onClick={this.reset}
-            style={{ 
-              padding: '15px 30px', 
-              fontSize: '20px', 
-              margin: '5px',
-              cursor: 'pointer',
-              backgroundColor: '#888',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px'
-            }}
-          >
-            Reset
-          </button>
-          
-          <div style={{ marginTop: '20px' }}>
-            <input 
-              type="number" 
-              onChange={handleInputChange}
+
+          <p className="status-message">{this.getStatusMessage()}</p>
+
+          <div className="button-row">
+            <button type="button" onClick={this.increment} disabled={count >= MAX_COUNT}>
+              + Increment
+            </button>
+            <button type="button" onClick={this.decrement} disabled={count <= MIN_COUNT}>
+              - Decrement
+            </button>
+            <button type="button" onClick={this.reset}>
+              Reset
+            </button>
+          </div>
+
+          <div className="input-row">
+            <label htmlFor="counter-input">Set value</label>
+            <input
+              id="counter-input"
+              type="number"
+              min={MIN_COUNT}
+              max={MAX_COUNT}
+              onChange={this.handleInputChange}
               placeholder="Set value"
-              style={{ 
-                padding: '10px',
-                fontSize: '16px',
-                marginRight: '10px'
-              }}
             />
           </div>
-          
-          {/* TODO: Add step counter functionality */}
         </div>
-      </div>
+      </section>
     );
   }
 }
 
-// Another component with issues
-function HistoryTracker() {
-  const [history, setHistory] = useState([]);
-  
-  useEffect(() => {
-    // Missing dependency array - INFINITE LOOP WARNING
-    useEffect(() => {
-      console.log('History updated');
-    });
-  });
-  
+function HistoryTracker({ history }) {
   return (
-    <div>
+    <section className="history-section">
       <h2>History</h2>
-      {/* Missing key when mapping */}
-      {history.map(item => <div>{item}</div>)}
-    </div>
+      <div className="history-list">
+        {history.map((item, index) => (
+          <div key={`${item}-${index}`} className="history-item">
+            Step {index + 1}: {item}
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
-// Unused component
-function UnusedComponent() {
-  return <div>This component is never used</div>;
-}
-
-// Component with prop issues
-function UserDisplay(props) {
-  // Mutating props directly - BAD
-  props.name = props.name || 'Anonymous';
-  
-  return (
-    <div style={{ padding: '10px', border: '1px solid #ccc' }}>
-      <h3>{props.name}</h3>
-      <p>{props.email}</p>
-    </div>
-  );
-}
-
-// Main App with issues
 function App() {
-  // Unused imports would be caught by linter, so we'll show other issues
   const [showCounter, setShowCounter] = useState(true);
-  
-  // Unused variable
-  const unusedState = 'not used anywhere';
-  
+  const [history, setHistory] = useState([0]);
+
+  useEffect(() => {
+    if (!showCounter) {
+      setHistory([]);
+    }
+  }, [showCounter]);
+
   return (
-    <div className="App" style={{ margin: '0', padding: '0' }}>
-      {/* Inline style overriding CSS */}
-      <header style={{ backgroundColor: '#222', color: '#fff', padding: '20px' }} className="App-header">
+    <div className="App">
+      <header className="App-header">
         <h1>React Counter Application</h1>
-        <button onClick={() => setShowCounter(!showCounter)}>
+        <button type="button" onClick={() => setShowCounter((currentValue) => !currentValue)}>
           Toggle Counter
         </button>
       </header>
-      
-      {showCounter ? <Counter initialValue={0} /> : null}
-      
-      {/* Unused component rendered */}
-      <HistoryTracker />
-      
-      {/* Props validation missing - NO PROPTYPES */}
+
+      <main className="app-content">
+        {showCounter ? (
+          <Counter initialValue={0} onHistoryChange={setHistory} />
+        ) : (
+          <p className="counter-hidden-message">Counter is hidden.</p>
+        )}
+
+        <HistoryTracker history={history} />
+      </main>
     </div>
   );
 }
