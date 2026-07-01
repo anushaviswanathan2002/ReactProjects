@@ -1,72 +1,114 @@
-/* CSS with lots of issues */
-
-/* Selector specificity problems */
 .App {
+  min-height: 100vh;
   text-align: center;
+  background: #f4f7fb;
+  color: #1f2933;
 }
 
-.App .App-header {
+.App-header {
   background-color: #222;
-  min-height: 100vh;
+  color: #fff;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vpx);
-  color: white;
+  gap: 1rem;
 }
 
-/* Duplicate properties */
-.App-header {
-  background-color: #333;
-  padding: 20px;
-  /* This will be overridden */
-  background-color: #222;
+.counter-container,
+.history-panel {
+  max-width: 40rem;
+  margin: 1.5rem auto;
+  padding: 1.5rem;
 }
 
-/* Unused CSS class */
-.unused-class {
-  color: red;
-  font-size: 20px;
+.counter-card,
+.history-panel {
+  background: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 0.75rem 2rem rgba(15, 23, 42, 0.08);
 }
 
-/* Important declarations everywhere - BAD PRACTICE */
-.counter-container {
-  margin: 20px !important;
-  padding: 20px !important;
+.counter-title,
+.history-panel h2 {
+  margin-top: 0;
 }
 
-/* Deep nesting - hard to maintain */
-.counter-container .counter-container div button {
-  border-radius: 5px;
+.counter-value {
+  margin: 0;
+  font-size: 3rem;
+  font-weight: 700;
 }
 
-/* Using px for everything - not responsive */
+.counter-history {
+  min-height: 2rem;
+  margin: 1rem 0;
+}
+
+.history-item {
+  display: inline-block;
+  margin: 0 0.25rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  background: #e5eef9;
+}
+
+.counter-status,
+.counter-timestamp,
+.history-panel p {
+  color: #52606d;
+}
+
+.button-row,
+.input-row {
+  margin-top: 1rem;
+}
+
+button,
+input {
+  font: inherit;
+}
+
 button {
-  font-size: 16px;
-  padding: 10px;
-  margin: 5px;
+  margin: 0.25rem;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  background: #2563eb;
+  color: #fff;
 }
 
-/* Magic numbers in CSS */
-div {
-  max-width: 1000px;
+button:hover {
+  background: #1d4ed8;
 }
 
-/* Overly specific selectors */
-div.counter-container div div button.increment-button {
-  background-color: green;
+input {
+  width: 100%;
+  max-width: 16rem;
+  padding: 0.75rem;
+  border: 1px solid #cbd2d9;
+  border-radius: 0.5rem;
 }
 
-/* Duplicate rules */
-p {
-  color: #333;
+.history-panel {
+  padding: 1.5rem;
 }
 
-p {
-  color: #444;
+.history-panel ul {
+  margin: 1rem 0 0;
+  padding-left: 1.25rem;
+  text-align: left;
 }
 
-p {
-  color: #555;
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
