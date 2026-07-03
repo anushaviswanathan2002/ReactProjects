@@ -1,260 +1,232 @@
 import React, { useState, useEffect, Component } from 'react';
 import './App.css';
 
-// Counter component with lots of issues
+// Constants - extracted magic numbers
+const MAX_COUNT = 100;
+const MIN_COUNT = -50;
+
+// Counter component
 class Counter extends Component {
   constructor(props) {
     super(props);
-    // Direct mutation of props - BAD
-    this.props.initialValue = this.props.initialValue || 0;
+    
+    const initialValue = props.initialValue || 0;
     
     this.state = {
-      count: this.props.initialValue,
+      count: initialValue,
       history: [],
-      // Unused state variable
-      unusedData: null,
       lastUpdated: Date.now()
     };
     
-    // Using var instead of let/const - SCOPE ISSUES
-    var timerId = null;
-    this.timerId = timerId;
-    
-    // Magic numbers everywhere
-    this.maxCount = 100;
-    this.minCount = -50;
+    this.timerId = null;
   }
   
   componentDidMount() {
     console.log('Counter mounted');
-    // Memory leak - not cleaning up interval
+    // Update timestamp using setState
     this.timerId = setInterval(() => {
-      // Mutating state directly
-      this.state.lastUpdated = Date.now();
-      this.forceUpdate();
+      this.setState({ lastUpdated: Date.now() });
     }, 1000);
-    
-    // Creating function inside render equivalent
-    const handleClick = () => {
-      console.log('clicked');
-    };
   }
   
   componentWillUnmount() {
-    // Forgetting to clear interval
-    // FIXME: Should clear interval here
+    // Clean up interval to prevent memory leaks
+    if (this.timerId) {
+      clearInterval(this.timerId);
+    }
   }
   
   increment = () => {
-    // Using == instead of === - TYPE COERCION
-    if (this.state.count == this.maxCount) {
+    // Use strict equality and check against constant
+    if (this.state.count === MAX_COUNT) {
       alert('Maximum reached!');
       return;
     }
     
-    // Direct state mutation - BAD
-    this.state.count += 1;
-    this.state.history.push(this.state.count);
-    
-    // Using setState incorrectly
-    this.setState({ count: this.state.count });
+    // Use setState with a function to safely update based on previous state
+    this.setState(prevState => {
+      const newCount = prevState.count + 1;
+      return {
+        count: newCount,
+        history: [...prevState.history, newCount],
+        lastUpdated: Date.now()
+      };
+    });
   };
   
   decrement = () => {
-    // No input validation
-    if (this.state.count <= this.minCount) {
-      return; // Silent failure
+    // Validate bounds using strict equality
+    if (this.state.count <= MIN_COUNT) {
+      alert('Minimum reached!');
+      return;
     }
     
-    // Another mutation
-    const newCount = this.state.count;
-    newCount -= 1;
-    this.state.count = newCount;
-    
-    this.setState(this.state);
+    // Use setState with a function for safe updates
+    this.setState(prevState => {
+      const newCount = prevState.count - 1;
+      return {
+        count: newCount,
+        history: [...prevState.history, newCount],
+        lastUpdated: Date.now()
+      };
+    });
   };
   
   reset = () => {
-    // Not handling reset properly
-    this.state.history = [];
-    this.forceUpdate();
+    // Reset state properly using setState
+    this.setState({
+      count: 0,
+      history: [],
+      lastUpdated: Date.now()
+    });
   };
   
   setValue = (value) => {
-    // No input validation
-    this.state.count = parseInt(value);
-    this.setState(this.state);
+    // Validate input and set count within bounds
+    const parsedValue = parseInt(value, 10);
+    
+    if (isNaN(parsedValue)) {
+      console.warn('Invalid value provided to setValue');
+      return;
+    }
+    
+    const boundedCount = Math.max(MIN_COUNT, Math.min(MAX_COUNT, parsedValue));
+    
+    this.setState({
+      count: boundedCount,
+      lastUpdated: Date.now()
+    });
   };
   
-  // Deeply nested ternary - HARD TO READ
+  // Get status message based on count value
   getStatusMessage = () => {
-    return this.state.count > 50 
-      ? (this.state.count > 80 ? 'Excellent!' : 'Good progress!') 
-      : (this.state.count > 0 ? 'Keep going!' : (this.state.count < 0 ? 'Negative territory' : 'Start here'));
+    const { count } = this.state;
+    
+    if (count > 80) return 'Excellent!';
+    if (count > 50) return 'Good progress!';
+    if (count > 0) return 'Keep going!';
+    if (count < 0) return 'Negative territory';
+    return 'Start here';
   };
   
-  render() {
-    console.log('Rendering counter');
-    
-    // Unused variable
-    const unusedVar = 'this is not used';
-    
-    // Creating new function on every render - PERFORMANCE ISSUE
-    const handleInputChange = (e) => {
-      this.setValue(e.target.value);
+  // Define button handler as class method to avoid recreation on every render
+  handleInputChange = (e) => {
+    this.setValue(e.target.value);
+  };
+
+  renderButton = (label, onClick, backgroundColor) => {
+    const buttonStyle = {
+      padding: '15px 30px',
+      fontSize: '20px',
+      margin: '5px',
+      cursor: 'pointer',
+      backgroundColor,
+      color: 'white',
+      border: 'none',
+      borderRadius: '5px'
     };
-    
     return (
-      <div className="counter-container" style={{ padding: '20px', textAlign: 'center' }}>
-        {/* Inline styles everywhere - BAD PRACTICE */}
-        <h1 style={{ color: 'blue', fontSize: '36px', marginBottom: '20px' }}>Counter App</h1>
+      <button onClick={onClick} style={buttonStyle} aria-label={label}>
+        {label}
+      </button>
+    );
+  };
+
+  render() {
+    return (
+      <div className="counter-container">
+        <h1 className="counter-title">Counter App</h1>
         
-        <div style={{ backgroundColor: '#f0f0f0', padding: '30px', borderRadius: '10px' }}>
-          {/* Accessibility issues - missing aria-labels */}
-          <p style={{ fontSize: '48px', fontWeight: 'bold', margin: '20px 0' }}>
+        <div className="counter-content">
+          <p className="counter-display" aria-label={`Counter value: ${this.state.count}`}>
             {this.state.count}
           </p>
           
-          {/* Using index as key - BAD */}
-          <div style={{ margin: '10px 0' }}>
+          <div className="history-display">
             {this.state.history.slice(-5).map((item, index) => (
-              <span key={index} style={{ margin: '0 5px' }}>{item}</span>
+              <span key={`history-${index}-${item}`} className="history-item">
+                {item}
+              </span>
             ))}
           </div>
           
-          <p style={{ color: '#666' }}>{this.getStatusMessage()}</p>
+          <p className="status-message">{this.getStatusMessage()}</p>
           
-          {/* Duplicate button code - NOT DRY */}
-          <button 
-            onClick={this.increment}
-            style={{ 
-              padding: '15px 30px', 
-              fontSize: '20px', 
-              margin: '5px',
-              cursor: 'pointer',
-              backgroundColor: '#4CAF50',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px'
-            }}
-          >
-            + Increment
-          </button>
-          
-          <button 
-            onClick={this.decrement}
-            style={{ 
-              padding: '15px 30px', 
-              fontSize: '20px', 
-              margin: '5px',
-              cursor: 'pointer',
-              backgroundColor: '#f44336',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px'
-            }}
-          >
-            - Decrement
-          </button>
-          
-          <button 
-            onClick={this.reset}
-            style={{ 
-              padding: '15px 30px', 
-              fontSize: '20px', 
-              margin: '5px',
-              cursor: 'pointer',
-              backgroundColor: '#888',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px'
-            }}
-          >
-            Reset
-          </button>
-          
-          <div style={{ marginTop: '20px' }}>
-            <input 
-              type="number" 
-              onChange={handleInputChange}
-              placeholder="Set value"
-              style={{ 
-                padding: '10px',
-                fontSize: '16px',
-                marginRight: '10px'
-              }}
-            />
+          <div className="button-group">
+            {this.renderButton('+ Increment', this.increment, '#4CAF50')}
+            {this.renderButton('- Decrement', this.decrement, '#f44336')}
+            {this.renderButton('Reset', this.reset, '#888')}
           </div>
           
-          {/* TODO: Add step counter functionality */}
+          <div className="input-group">
+            <input 
+              type="number" 
+              onChange={this.handleInputChange}
+              placeholder="Set value"
+              className="input-field"
+              aria-label="Set counter value"
+            />
+          </div>
         </div>
       </div>
     );
   }
 }
 
-// Another component with issues
+// History tracker component
 function HistoryTracker() {
   const [history, setHistory] = useState([]);
   
+  // Properly add dependency array to prevent infinite loops
   useEffect(() => {
-    // Missing dependency array - INFINITE LOOP WARNING
-    useEffect(() => {
-      console.log('History updated');
-    });
-  });
+    console.log('History component mounted');
+  }, []);
   
   return (
     <div>
       <h2>History</h2>
-      {/* Missing key when mapping */}
-      {history.map(item => <div>{item}</div>)}
+      {history.length > 0 ? (
+        history.map((item, index) => (
+          <div key={`history-item-${index}-${item}`}>{item}</div>
+        ))
+      ) : (
+        <p>No history yet</p>
+      )}
     </div>
   );
 }
 
-// Unused component
-function UnusedComponent() {
-  return <div>This component is never used</div>;
-}
-
-// Component with prop issues
+// User display component with proper prop handling
 function UserDisplay(props) {
-  // Mutating props directly - BAD
-  props.name = props.name || 'Anonymous';
+  // Use local variable instead of mutating props
+  const displayName = props.name || 'Anonymous';
   
   return (
-    <div style={{ padding: '10px', border: '1px solid #ccc' }}>
-      <h3>{props.name}</h3>
-      <p>{props.email}</p>
+    <div className="user-display">
+      <h3>{displayName}</h3>
+      {props.email && <p>{props.email}</p>}
     </div>
   );
 }
 
-// Main App with issues
+// Main App component
 function App() {
-  // Unused imports would be caught by linter, so we'll show other issues
   const [showCounter, setShowCounter] = useState(true);
   
-  // Unused variable
-  const unusedState = 'not used anywhere';
+  const handleToggle = () => {
+    setShowCounter(!showCounter);
+  };
   
   return (
-    <div className="App" style={{ margin: '0', padding: '0' }}>
-      {/* Inline style overriding CSS */}
-      <header style={{ backgroundColor: '#222', color: '#fff', padding: '20px' }} className="App-header">
+    <div className="App">
+      <header className="App-header">
         <h1>React Counter Application</h1>
-        <button onClick={() => setShowCounter(!showCounter)}>
-          Toggle Counter
+        <button onClick={handleToggle} aria-label="Toggle counter display">
+          {showCounter ? 'Hide Counter' : 'Show Counter'}
         </button>
       </header>
       
-      {showCounter ? <Counter initialValue={0} /> : null}
-      
-      {/* Unused component rendered */}
-      <HistoryTracker />
-      
-      {/* Props validation missing - NO PROPTYPES */}
+      {showCounter && <Counter initialValue={0} />}
     </div>
   );
 }

@@ -1,72 +1,133 @@
-/* CSS with lots of issues */
-
-/* Selector specificity problems */
+/* App Layout */
 .App {
   text-align: center;
+  margin: 0;
+  padding: 0;
 }
 
-.App .App-header {
+.App-header {
   background-color: #222;
-  min-height: 100vh;
+  color: white;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vpx);
-  color: white;
+  gap: 15px;
 }
 
-/* Duplicate properties */
-.App-header {
-  background-color: #333;
-  padding: 20px;
-  /* This will be overridden */
-  background-color: #222;
+.App-header h1 {
+  margin: 0;
+  font-size: 32px;
 }
 
-/* Unused CSS class */
-.unused-class {
-  color: red;
-  font-size: 20px;
-}
-
-/* Important declarations everywhere - BAD PRACTICE */
-.counter-container {
-  margin: 20px !important;
-  padding: 20px !important;
-}
-
-/* Deep nesting - hard to maintain */
-.counter-container .counter-container div button {
-  border-radius: 5px;
-}
-
-/* Using px for everything - not responsive */
-button {
+.App-header button {
+  padding: 10px 20px;
   font-size: 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.App-header button:hover {
+  background-color: #45a049;
+}
+
+/* Counter Component */
+.counter-container {
+  padding: 20px;
+  text-align: center;
+}
+
+.counter-title {
+  color: #222;
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.counter-content {
+  background-color: #f0f0f0;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.counter-display {
+  font-size: 48px;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.history-display {
+  margin: 10px 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.history-item {
+  padding: 5px 10px;
+  background-color: #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.status-message {
+  color: #666;
+  font-size: 16px;
+  margin: 15px 0;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.button-group button {
+  padding: 15px 30px;
+  font-size: 16px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.button-group button:hover {
+  opacity: 0.9;
+}
+
+.input-group {
+  margin-top: 20px;
+}
+
+.input-field {
   padding: 10px;
-  margin: 5px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-/* Magic numbers in CSS */
-div {
-  max-width: 1000px;
+.input-field:focus {
+  outline: none;
+  border-color: #4CAF50;
 }
 
-/* Overly specific selectors */
-div.counter-container div div button.increment-button {
-  background-color: green;
+/* User Display Component */
+.user-display {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 10px 0;
 }
 
-/* Duplicate rules */
-p {
-  color: #333;
-}
-
-p {
-  color: #444;
-}
-
-p {
-  color: #555;
+.user-display h3 {
+  margin: 10px 0;
 }
