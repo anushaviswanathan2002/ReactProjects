@@ -30,21 +30,21 @@ function createCards() {
   return shuffleArray(cards);
 }
 
-function Card({ card, onClick, disabled }) {
+function Card({ card, onClick, disabled, isFlipped, isMatched }) {
   const handleClick = useCallback(() => {
-    if (!disabled && !card.isMatched && !card.isFlipped) {
+    if (!disabled && !isMatched && !isFlipped) {
       onClick(card.id);
     }
-  }, [card.id, card.isFlipped, card.isMatched, disabled, onClick]);
+  }, [card.id, isFlipped, isMatched, disabled, onClick]);
 
   return (
     <button
-      className={`card ${card.isFlipped || card.isMatched ? 'flipped' : ''} ${card.isMatched ? 'matched' : ''}`}
+      className={`card ${isFlipped || isMatched ? 'flipped' : ''} ${isMatched ? 'matched' : ''}`}
       onClick={handleClick}
-      disabled={disabled || card.isMatched}
+      disabled={disabled || isMatched}
       aria-label={`Card ${card.id}`}
     >
-      {(card.isFlipped || card.isMatched) && <span className="emoji">{card.emoji}</span>}
+      {(isFlipped || isMatched) && <span className="emoji">{card.emoji}</span>}
     </button>
   );
 }
@@ -60,7 +60,6 @@ function MemoryGame() {
   // Check for match
   useEffect(() => {
     if (flipped.length === 2) {
-      setDisabled(true);
       setMoves(m => m + 1);
 
       const [first, second] = flipped;
@@ -72,6 +71,7 @@ function MemoryGame() {
         setFlipped([]);
         setDisabled(false);
       } else {
+        setDisabled(true);
         setTimeout(() => {
           setFlipped([]);
           setDisabled(false);
@@ -86,17 +86,6 @@ function MemoryGame() {
       setGameWon(true);
     }
   }, [matched, cards.length]);
-
-  // Update card states
-  useEffect(() => {
-    setCards(prevCards =>
-      prevCards.map(card => ({
-        ...card,
-        isFlipped: flipped.includes(card.id),
-        isMatched: matched.includes(card.id),
-      }))
-    );
-  }, [flipped, matched]);
 
   const handleCardClick = useCallback((cardId) => {
     if (!flipped.includes(cardId) && flipped.length < 2) {
@@ -130,6 +119,8 @@ function MemoryGame() {
             card={card}
             onClick={handleCardClick}
             disabled={disabled}
+            isFlipped={flipped.includes(card.id)}
+            isMatched={matched.includes(card.id)}
           />
         ))}
       </div>
