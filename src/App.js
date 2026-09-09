@@ -59,47 +59,63 @@ function MemoryGame() {
 
   // Check for match when 2 cards are flipped
   useEffect(() => {
+    // Only process when we have exactly 2 cards flipped
     if (flipped.length !== 2) return;
 
+    // Prevent further clicks while we check
     setDisabled(true);
+    setMoves(m => m + 1);
+
+    // Get the flipped card IDs and find the actual card objects
     const [firstId, secondId] = flipped;
     const firstCard = cards.find(c => c.id === firstId);
     const secondCard = cards.find(c => c.id === secondId);
 
-    // Increment moves
-    setMoves(m => m + 1);
+    // If either card not found, reset and return
+    if (!firstCard || !secondCard) {
+      setFlipped([]);
+      setDisabled(false);
+      return;
+    }
 
     // Check if they match
     if (firstCard.emoji === secondCard.emoji) {
-      // Match found - add to matched
+      // Match found! Add to matched array and keep cards flipped
       setMatched(prev => [...prev, firstId, secondId]);
-      setFlipped([]);
-      setDisabled(false);
+      setFlipped([]); // Clear flipped to allow more clicks
+      setDisabled(false); // Re-enable clicks
     } else {
-      // No match - flip back after delay
+      // No match - flip cards back after delay
       const timer = setTimeout(() => {
-        setFlipped([]);
-        setDisabled(false);
+        setFlipped([]); // Reset flipped cards
+        setDisabled(false); // Re-enable clicks
       }, 1000);
+
+      // Cleanup function to clear timer if effect runs again
       return () => clearTimeout(timer);
     }
   }, [flipped, cards]);
 
-  // Check for win
+  // Check for win condition
   useEffect(() => {
+    // Win when all cards are matched
     if (matched.length > 0 && matched.length === cards.length) {
       setGameWon(true);
     }
   }, [matched, cards.length]);
 
+  // Handle card click
   const handleCardClick = useCallback((cardId) => {
-    // Don't allow if disabled or already have 2 flipped
-    if (disabled || flipped.length >= 2) return;
+    // Can't click if game is disabled (checking for match)
+    if (disabled) return;
     
-    // Don't allow clicking same card twice
+    // Can't click if we already have 2 cards flipped
+    if (flipped.length >= 2) return;
+    
+    // Can't click the same card twice
     if (flipped.includes(cardId)) return;
     
-    // Add card to flipped
+    // Add this card to the flipped array
     setFlipped(prev => [...prev, cardId]);
   }, [flipped, disabled]);
 
