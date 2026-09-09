@@ -50,48 +50,58 @@ function Card({ card, onClick, disabled, isFlipped, isMatched }) {
 }
 
 function MemoryGame() {
-  const [cards, setCards] = useState(createCards());
+  const [cards, setCards] = useState(() => createCards());
   const [flipped, setFlipped] = useState([]);
   const [matched, setMatched] = useState([]);
   const [moves, setMoves] = useState(0);
   const [gameWon, setGameWon] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
-  // Check for match
+  // Check for match when 2 cards are flipped
   useEffect(() => {
-    if (flipped.length === 2) {
-      setMoves(m => m + 1);
+    if (flipped.length !== 2) return;
 
-      const [first, second] = flipped;
-      const firstCard = cards.find(c => c.id === first);
-      const secondCard = cards.find(c => c.id === second);
+    setDisabled(true);
+    const [firstId, secondId] = flipped;
+    const firstCard = cards.find(c => c.id === firstId);
+    const secondCard = cards.find(c => c.id === secondId);
 
-      if (firstCard.emoji === secondCard.emoji) {
-        setMatched(m => [...m, first, second]);
+    // Increment moves
+    setMoves(m => m + 1);
+
+    // Check if they match
+    if (firstCard.emoji === secondCard.emoji) {
+      // Match found - add to matched
+      setMatched(prev => [...prev, firstId, secondId]);
+      setFlipped([]);
+      setDisabled(false);
+    } else {
+      // No match - flip back after delay
+      const timer = setTimeout(() => {
         setFlipped([]);
         setDisabled(false);
-      } else {
-        setDisabled(true);
-        setTimeout(() => {
-          setFlipped([]);
-          setDisabled(false);
-        }, 1000);
-      }
+      }, 1000);
+      return () => clearTimeout(timer);
     }
   }, [flipped, cards]);
 
   // Check for win
   useEffect(() => {
-    if (matched.length === cards.length && cards.length > 0) {
+    if (matched.length > 0 && matched.length === cards.length) {
       setGameWon(true);
     }
   }, [matched, cards.length]);
 
   const handleCardClick = useCallback((cardId) => {
-    if (!flipped.includes(cardId) && flipped.length < 2) {
-      setFlipped(f => [...f, cardId]);
-    }
-  }, [flipped]);
+    // Don't allow if disabled or already have 2 flipped
+    if (disabled || flipped.length >= 2) return;
+    
+    // Don't allow clicking same card twice
+    if (flipped.includes(cardId)) return;
+    
+    // Add card to flipped
+    setFlipped(prev => [...prev, cardId]);
+  }, [flipped, disabled]);
 
   const resetGame = useCallback(() => {
     setCards(createCards());
