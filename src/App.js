@@ -1,24 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 const CARDS_EMOJIS = ['🎨', '🎭', '🎪', '🎯', '🎲', '🎸', '🎮', '🎳'];
 const GRID_SIZE = 4;
 
 function Card({ card, onClick, isDisabled }) {
-  const handleClick = useCallback(() => {
-    if (!isDisabled && !card.isMatched && !card.isFlipped) {
-      onClick(card.id);
-    }
-  }, [card, onClick, isDisabled]);
-
   return (
     <button
       className={`card ${card.isFlipped ? 'flipped' : ''} ${
         card.isMatched ? 'matched' : ''
       }`}
-      onClick={handleClick}
+      onClick={() => !isDisabled && !card.isMatched && !card.isFlipped && onClick(card.id)}
       disabled={isDisabled}
-      aria-label={`Card ${card.id}${card.isFlipped ? ` showing ${card.emoji}` : ''}`}
+      aria-label={`Card ${card.id}`}
     >
       <div className="card-inner">
         <div className="card-front">?</div>
@@ -66,7 +60,7 @@ function App() {
   const [moves, setMoves] = useState(0);
   const [matchedPairs, setMatchedPairs] = useState(0);
   const [isCheckingMatch, setIsCheckingMatch] = useState(false);
-  const [flippedIndices, setFlippedIndices] = useState([]);
+  const [flippedCards, setFlippedCards] = useState([]);
   const [gameWon, setGameWon] = useState(false);
 
   const totalPairs = (GRID_SIZE * GRID_SIZE) / 2;
@@ -74,46 +68,46 @@ function App() {
   // Initialize game on mount
   useEffect(() => {
     initializeGame();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Check for match when two cards are flipped
   useEffect(() => {
-    if (flippedIndices.length === 2) {
+    if (flippedCards.length === 2) {
       setIsCheckingMatch(true);
-      const timer = setTimeout(() => {
-        const [firstId, secondId] = flippedIndices;
-        const firstCard = cards[firstId];
-        const secondCard = cards[secondId];
+      const timeout = setTimeout(() => {
+        const [id1, id2] = flippedCards;
+        const card1 = cards.find(c => c.id === id1);
+        const card2 = cards.find(c => c.id === id2);
 
-        if (firstCard.emoji === secondCard.emoji) {
+        if (card1 && card2 && card1.emoji === card2.emoji) {
           // Match found
-          setCards((prevCards) =>
-            prevCards.map((card) =>
-              card.id === firstId || card.id === secondId
+          setCards(prev =>
+            prev.map(card =>
+              card.id === id1 || card.id === id2
                 ? { ...card, isMatched: true }
                 : card
             )
           );
-          setMatchedPairs((prev) => prev + 1);
+          setMatchedPairs(prev => prev + 1);
         } else {
           // No match - flip back
-          setCards((prevCards) =>
-            prevCards.map((card) =>
-              card.id === firstId || card.id === secondId
+          setCards(prev =>
+            prev.map(card =>
+              card.id === id1 || card.id === id2
                 ? { ...card, isFlipped: false }
                 : card
             )
           );
         }
 
-        setFlippedIndices([]);
-        setMoves((prev) => prev + 1);
+        setFlippedCards([]);
+        setMoves(prev => prev + 1);
         setIsCheckingMatch(false);
       }, 600);
-      return () => clearTimeout(timer);
+
+      return () => clearTimeout(timeout);
     }
-  }, [flippedIndices, cards]);
+  }, [flippedCards, cards]);
 
   // Check if game is won
   useEffect(() => {
@@ -122,7 +116,7 @@ function App() {
     }
   }, [matchedPairs, totalPairs]);
 
-  const initializeGame = useCallback(() => {
+  const initializeGame = () => {
     const shuffledEmojis = [];
     CARDS_EMOJIS.forEach((emoji) => {
       shuffledEmojis.push(emoji, emoji);
@@ -147,30 +141,29 @@ function App() {
     setCards(newCards);
     setMoves(0);
     setMatchedPairs(0);
-    setFlippedIndices([]);
+    setFlippedCards([]);
     setGameWon(false);
-  }, []);
+  };
 
-  const handleCardClick = useCallback(
-    (cardId) => {
-      if (
-        flippedIndices.length >= 2 ||
-        flippedIndices.includes(cardId) ||
-        cards[cardId]?.isMatched
-      ) {
-        return;
-      }
+  const handleCardClick = (cardId) => {
+    // Prevent clicking if already checking, card already flipped, or card already matched
+    if (
+      isCheckingMatch ||
+      flippedCards.includes(cardId) ||
+      cards.some(c => c.id === cardId && c.isMatched)
+    ) {
+      return;
+    }
 
-      setCards((prevCards) =>
-        prevCards.map((card) =>
-          card.id === cardId ? { ...card, isFlipped: true } : card
-        )
-      );
+    // Flip the card
+    setCards(prev =>
+      prev.map(card =>
+        card.id === cardId ? { ...card, isFlipped: true } : card
+      )
+    );
 
-      setFlippedIndices((prev) => [...prev, cardId]);
-    },
-    [flippedIndices, cards]
-  );
+    setFlippedCards(prev => [...prev, cardId]);
+  };
 
   return (
     <div className="app">

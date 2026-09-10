@@ -115,9 +115,9 @@ body {
   cursor: pointer;
   background: none;
   padding: 0;
-  perspective: 1000px;
   transition: transform 0.2s ease;
   font-size: 0;
+  perspective: 1000px;
 }
 
 .card:hover:not(:disabled) {
