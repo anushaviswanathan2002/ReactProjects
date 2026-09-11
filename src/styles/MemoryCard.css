@@ -1,0 +1,170 @@
+.memory-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.game-stats {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.stat-label {
+  color: #666;
+}
+
+.stat-value {
+  color: #667eea;
+  font-size: 24px;
+  min-width: 50px;
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 30px;
+  perspective: 1000px;
+}
+
+.game-card {
+  aspect-ratio: 1;
+  cursor: pointer;
+  position: relative;
+  height: auto;
+  min-height: 100px;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  border-radius: 8px;
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.card-front {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: 2px solid #667eea;
+}
+
+.card-back {
+  background: white;
+  color: #333;
+  transform: rotateY(180deg);
+  border: 2px solid #ddd;
+}
+
+.game-card:hover:not(.flipped) .card-front {
+  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+  transform: scale(1.05);
+}
+
+.game-won {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.won-message {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.won-message h3 {
+  margin: 0 0 10px 0;
+  font-size: 32px;
+  color: #667eea;
+}
+
+.won-message p {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .game-board {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .card-front,
+  .card-back {
+    font-size: 36px;
+  }
+
+  .game-stats {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-board {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .game-card {
+    min-height: 80px;
+  }
+
+  .card-front,
+  .card-back {
+    font-size: 28px;
+  }
+}
