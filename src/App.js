@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './AuthContext';
+import { TimerProvider } from './TimerContext';
 import Login from './Login';
 import SignUp from './SignUp';
 import TodoApp from './TodoApp';
@@ -39,7 +40,9 @@ function AppContent() {
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <TimerProvider>
+        <AppContent />
+      </TimerProvider>
     </AuthProvider>
   );
 }

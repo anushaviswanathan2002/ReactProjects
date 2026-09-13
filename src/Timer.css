@@ -1,0 +1,210 @@
+.timer-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  margin: 12px 0;
+}
+
+.timer-display {
+  text-align: center;
+  color: white;
+}
+
+.timer-time {
+  font-size: 42px;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.timer-time.running {
+  animation: pulse 1s ease-in-out infinite;
+  color: #4ade80;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.timer-stats {
+  font-size: 13px;
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  opacity: 0.9;
+}
+
+.timer-label {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 4px 12px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.timer-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.timer-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+  min-width: 80px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.timer-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.timer-btn:active {
+  transform: translateY(0);
+}
+
+.timer-btn-start {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  flex: 1;
+  min-width: 100px;
+}
+
+.timer-btn-start:hover {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+
+.timer-btn-pause {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  flex: 1;
+  min-width: 100px;
+}
+
+.timer-btn-pause:hover {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.timer-btn-resume {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  flex: 1;
+  min-width: 100px;
+}
+
+.timer-btn-resume:hover {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.timer-btn-reset {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  flex: 1;
+  min-width: 100px;
+}
+
+.timer-btn-reset:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+.timer-quick-add {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.timer-quick-btn {
+  padding: 8px 12px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.timer-quick-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: scale(1.05);
+}
+
+.timer-quick-btn:active {
+  transform: scale(0.95);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .timer-container {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .timer-time {
+    font-size: 32px;
+  }
+
+  .timer-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    min-width: 70px;
+  }
+
+  .timer-quick-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .timer-container {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .timer-time {
+    font-size: 28px;
+  }
+
+  .timer-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    min-width: 60px;
+  }
+
+  .timer-controls {
+    gap: 6px;
+  }
+
+  .timer-quick-add {
+    padding-top: 6px;
+    gap: 6px;
+  }
+
+  .timer-quick-btn {
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+}

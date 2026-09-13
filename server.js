@@ -94,6 +94,7 @@ app.post('/api/todos', verifyToken, (req, res) => {
     title,
     description: description || '',
     completed: false,
+    timeSpent: 0,
     createdAt: new Date()
   };
 
@@ -103,7 +104,7 @@ app.post('/api/todos', verifyToken, (req, res) => {
 });
 
 app.put('/api/todos/:id', verifyToken, (req, res) => {
-  const { title, description, completed } = req.body;
+  const { title, description, completed, timeSpent } = req.body;
   const userTodos = todos.get(req.userId) || [];
   const todo = userTodos.find(t => t.id === req.params.id);
 
@@ -114,6 +115,7 @@ app.put('/api/todos/:id', verifyToken, (req, res) => {
   if (title !== undefined) todo.title = title;
   if (description !== undefined) todo.description = description;
   if (completed !== undefined) todo.completed = completed;
+  if (timeSpent !== undefined) todo.timeSpent = timeSpent;
 
   todos.set(req.userId, userTodos);
   res.json(todo);
@@ -130,6 +132,32 @@ app.delete('/api/todos/:id', verifyToken, (req, res) => {
   userTodos.splice(index, 1);
   todos.set(req.userId, userTodos);
   res.json({ message: 'Todo deleted' });
+});
+
+// Timer Routes
+app.post('/api/todos/:id/timer', verifyToken, (req, res) => {
+  const { timeSpent } = req.body;
+  const userTodos = todos.get(req.userId) || [];
+  const todo = userTodos.find(t => t.id === req.params.id);
+
+  if (!todo) {
+    return res.status(404).json({ error: 'Todo not found' });
+  }
+
+  todo.timeSpent = timeSpent || 0;
+  todos.set(req.userId, userTodos);
+  res.json({ message: 'Timer saved', todo });
+});
+
+app.get('/api/todos/:id/timer', verifyToken, (req, res) => {
+  const userTodos = todos.get(req.userId) || [];
+  const todo = userTodos.find(t => t.id === req.params.id);
+
+  if (!todo) {
+    return res.status(404).json({ error: 'Todo not found' });
+  }
+
+  res.json({ timeSpent: todo.timeSpent || 0 });
 });
 
 app.listen(PORT, () => {

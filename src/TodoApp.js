@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useAuth } from './AuthContext';
+import { TimerContext } from './TimerContext';
+import Timer from './Timer';
 import './TodoApp.css';
 
 const TodoApp = () => {
   const { user, token, logout } = useAuth();
+  const { initializeTimer } = useContext(TimerContext);
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -12,6 +15,7 @@ const TodoApp = () => {
   const [editTitle, setEditTitle] = useState('');
   const [editDescription, setEditDescription] = useState('');
   const [filter, setFilter] = useState('all'); // all, active, completed
+  const [expandedTimer, setExpandedTimer] = useState(null); // Track which todo has expanded timer
 
   useEffect(() => {
     const loadTodos = async () => {
@@ -23,6 +27,10 @@ const TodoApp = () => {
         if (response.ok) {
           const data = await response.json();
           setTodos(data.todos);
+          // Initialize timers for all todos
+          data.todos.forEach(todo => {
+            initializeTimer(todo.id, todo.timeSpent || 0);
+          });
         }
       } catch (err) {
         console.error('Failed to fetch todos', err);
@@ -34,7 +42,7 @@ const TodoApp = () => {
     if (token) {
       loadTodos();
     }
-  }, [token]);
+  }, [token, initializeTimer]);
 
 
 
@@ -54,6 +62,7 @@ const TodoApp = () => {
       if (response.ok) {
         const newTodo = await response.json();
         setTodos([...todos, newTodo]);
+        initializeTimer(newTodo.id, 0);
         setTitle('');
         setDescription('');
       }
@@ -233,6 +242,13 @@ const TodoApp = () => {
                   </div>
                   <div className="todo-actions">
                     <button
+                      onClick={() => setExpandedTimer(expandedTimer === todo.id ? null : todo.id)}
+                      className="timer-button"
+                      title="Toggle Timer"
+                    >
+                      ⏱ Timer
+                    </button>
+                    <button
                       onClick={() => startEdit(todo)}
                       className="edit-button"
                     >
@@ -246,6 +262,11 @@ const TodoApp = () => {
                     </button>
                   </div>
                 </>
+              )}
+              {expandedTimer === todo.id && !editingId && (
+                <div className="todo-timer-wrapper">
+                  <Timer taskId={todo.id} />
+                </div>
               )}
             </div>
           ))}

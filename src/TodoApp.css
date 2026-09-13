@@ -216,7 +216,8 @@
 }
 
 .edit-button,
-.delete-button {
+.delete-button,
+.timer-button {
   padding: 6px 12px;
   border: none;
   border-radius: 6px;
@@ -242,6 +243,15 @@
 
 .delete-button:hover {
   background: #ee5a52;
+}
+
+.timer-button {
+  background: #667eea;
+  color: white;
+}
+
+.timer-button:hover {
+  background: #764ba2;
 }
 
 .edit-form {
@@ -309,6 +319,13 @@
   max-width: 600px;
   margin: 0 auto;
   padding: 40px 20px;
+}
+
+.todo-timer-wrapper {
+  width: 100%;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 2px solid #f0f0f0;
 }
 
 @media (max-width: 600px) {
