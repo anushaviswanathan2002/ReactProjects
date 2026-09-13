@@ -1,6 +1,7 @@
 import React from 'react';
+import Timer from './Timer';
 
-function TodoItem({ todo, onToggle, onDelete, onEdit }) {
+function TodoItem({ todo, onToggle, onDelete, onEdit, onTimeUpdate }) {
   const getPriorityEmoji = (priority) => {
     const emojis = { high: '🔴', medium: '🟡', low: '🟢' };
     return emojis[priority] || '⚪';
@@ -32,6 +33,13 @@ function TodoItem({ todo, onToggle, onDelete, onEdit }) {
             <span className="todo-badge" style={{ fontSize: '11px' }}>
               {new Date(todo.createdAt).toLocaleDateString()}
             </span>
+          </div>
+          <div className="timer-wrapper">
+            <Timer 
+              todoId={todo.id}
+              timeSpent={todo.timeSpent || 0}
+              onTimeUpdate={(time) => onTimeUpdate(todo.id, time)}
+            />
           </div>
         </div>
       </div>
