@@ -1,195 +1,595 @@
-/* Memory Game CSS - Full of issues for testing */
-
-/* ISSUE 1: Duplicate selectors */
-.App {
-  text-align: center;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.App {
-  background-color: #f5f5f5;
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7fa;
+  color: #333;
 }
 
-.App {
+.app {
   min-height: 100vh;
-}
-
-/* ISSUE 2: Overly specific selectors */
-div.App div.memory-game div.card {
-  cursor: pointer;
-}
-
-/* ISSUE 3: Deep nesting - hard to maintain */
-.memory-game .card .card-inner {
-  width: 100%;
-  height: 100%;
-}
-
-/* ISSUE 4: Using !important everywhere - BAD PRACTICE */
-.card {
-  margin: 10px !important;
-  padding: 10px !important;
-  border-radius: 8px !important;
-}
-
-/* ISSUE 5: Magic numbers in CSS */
-button {
-  padding: 10px 20px;
-  margin: 5px;
-  font-size: 16px;
-}
-
-/* ISSUE 6: Using px for everything - not responsive */
-h1 {
-  font-size: 32px;
-  margin: 10px;
-  padding: 15px;
-}
-
-/* ISSUE 7: Unused CSS class */
-.unused-leaderboard-style {
-  background-color: red;
-  border: 1px solid blue;
-}
-
-/* ISSUE 8: Duplicate properties */
-.leaderboard {
-  background-color: #fff;
-  padding: 20px;
-  background-color: #f9f9f9;
-}
-
-/* ISSUE 9: Conflicting selectors */
-ul li {
-  color: #333;
-}
-
-li {
-  color: #444;
-}
-
-ul li {
-  color: #555;
-}
-
-/* ISSUE 10: Selector specificity war */
-.App-header h1 {
-  color: #333;
-}
-
-.App-header > h1 {
-  color: #222;
-}
-
-div.App-header h1 {
-  color: #111;
-}
-
-/* ISSUE 11: Redundant styles */
-button {
-  cursor: pointer;
-  cursor: pointer;
-  cursor: pointer;
-}
-
-/* ISSUE 12: Hard-coded colors instead of variables */
-.card {
-  background-color: #4169E1;
-  border-color: #333333;
-}
-
-.card.flipped {
-  background-color: #87CEEB;
-}
-
-/* ISSUE 13: Inefficient selector */
-div.memory-game > div > div > div.card {
   display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* ISSUE 14: Z-index magic number */
-.card.flipped {
-  z-index: 100;
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.5rem;
+  color: #666;
 }
 
-/* ISSUE 15: Unused media query */
-@media (max-width: 500px) {
-  .old-mobile-style {
-    display: none;
+/* Auth Pages Styles */
+.auth-container {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.auth-header h1 {
+  font-size: 28px;
+  margin-bottom: 8px;
+  color: #2c3e50;
+}
+
+.auth-header p {
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 14px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.form-group input:invalid {
+  border-color: #e74c3c;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.success-message {
+  color: #27ae60;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.auth-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-bottom: 15px;
+}
+
+.auth-button:hover {
+  background-color: #2980b9;
+}
+
+.auth-button:active {
+  transform: scale(0.98);
+}
+
+.switch-auth {
+  text-align: center;
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+.switch-auth button {
+  background: none;
+  border: none;
+  color: #3498db;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+  padding: 0;
+  margin-left: 4px;
+}
+
+.switch-auth button:hover {
+  color: #2980b9;
+}
+
+/* Todo App Styles */
+.todo-app-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.todo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.todo-header h1 {
+  font-size: 28px;
+  color: #2c3e50;
+}
+
+.welcome-text {
+  font-size: 14px;
+  color: #7f8c8d;
+}
+
+.logout-button {
+  padding: 10px 20px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+  background-color: #c0392b;
+}
+
+.todo-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .todo-content {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
-/* ISSUE 16: Inconsistent naming */
-.cardContainer {
+.add-todo-section {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-todo-section h2 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.add-todo-form {
   display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
 }
 
-.card_container {
-  margin: 10px;
+.add-todo-form input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
-.cardcontainer {
-  padding: 5px;
+.add-todo-form input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
-/* ISSUE 17: Missing fallback for font-family */
-body {
-  font-family: 'Roboto', sans-serif;
+.add-todo-button {
+  padding: 10px 20px;
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-/* ISSUE 18: Vendor prefixes not needed */
-.card {
-  -webkit-border-radius: 8px;
-  -moz-border-radius: 8px;
+.add-todo-button:hover {
+  background-color: #229954;
+}
+
+.priority-select {
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.priority-select:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.category-select {
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.category-select:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.todos-list {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.todos-list h2 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.todos-empty {
+  text-align: center;
+  padding: 30px;
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+.todos-empty-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.todo-filter {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.filter-button {
+  padding: 8px 12px;
+  background-color: #ecf0f1;
+  border: 1px solid #bdc3c7;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.filter-button.active {
+  background-color: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.filter-button:hover {
+  border-color: #3498db;
+}
+
+.todo-item {
+  background: #f8f9fa;
+  padding: 15px;
+  margin-bottom: 10px;
   border-radius: 8px;
+  border-left: 4px solid #3498db;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  transition: all 0.3s;
 }
 
-/* ISSUE 19: Duplicate rule with different specificity */
-.leaderboard ul li {
-  list-style: none;
-  padding: 5px;
+.todo-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.leaderboard ul {
-  list-style: none;
-  padding: 5px;
+.todo-item.completed {
+  opacity: 0.7;
+  background: #ecf0f1;
+  border-left-color: #27ae60;
 }
 
-/* ISSUE 20: Unused pseudo-class styles */
-button:hover {
-  transform: scale(1.05);
+.todo-item.high-priority {
+  border-left-color: #e74c3c;
 }
 
-button:active {
-  transform: scale(0.95);
+.todo-item.medium-priority {
+  border-left-color: #f39c12;
 }
 
-button:focus {
-  outline: 2px solid blue;
+.todo-item.low-priority {
+  border-left-color: #95a5a6;
 }
 
-/* ISSUE 21: Redundant wrapper selector */
-.App-header .App-header {
-  background-color: #222;
+.todo-item-left {
+  display: flex;
+  gap: 12px;
+  flex: 1;
 }
 
-/* ISSUE 22: Confusing comments */
-.button-group {
-  margin-top: 20px;
+.todo-checkbox {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  cursor: pointer;
 }
 
-/* The button group is above the grid */
-
-/* ISSUE 23: Empty rule */
-.memory-game {
+.todo-item-content {
+  flex: 1;
 }
 
-/* ISSUE 24: Invalid CSS property value */
-h2 {
-  font-size: -20px;
-  margin: abc;
+.todo-item-title {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 4px;
+  word-break: break-word;
 }
 
-/* ISSUE 25: Missing proper reset */
-* {
-  box-sizing: content-box;
+.todo-item.completed .todo-item-title {
+  text-decoration: line-through;
+  color: #95a5a6;
+}
+
+.todo-item-meta {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+  color: #7f8c8d;
+}
+
+.todo-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background-color: #ecf0f1;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.priority-badge {
+  font-weight: 600;
+}
+
+.priority-badge.high {
+  color: #e74c3c;
+}
+
+.priority-badge.medium {
+  color: #f39c12;
+}
+
+.priority-badge.low {
+  color: #95a5a6;
+}
+
+.category-badge {
+  color: #3498db;
+}
+
+.todo-item-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.edit-button {
+  background-color: #3498db;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #2980b9;
+}
+
+.delete-button {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+}
+
+.stats-section {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  grid-column: 1 / -1;
+}
+
+.stats-section h2 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-card.completed {
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+}
+
+.stat-card.pending {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+}
+
+.stat-number {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.modal-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.modal-button-save {
+  background-color: #27ae60;
+  color: white;
+}
+
+.modal-button-save:hover {
+  background-color: #229954;
+}
+
+.modal-button-cancel {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.modal-button-cancel:hover {
+  background-color: #7f8c8d;
+}
+
+@media (max-width: 600px) {
+  .auth-container {
+    padding: 20px;
+  }
+
+  .auth-header h1 {
+    font-size: 24px;
+  }
+
+  .todo-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .todo-header h1 {
+    font-size: 24px;
+  }
+
+  .todo-content {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
 }
