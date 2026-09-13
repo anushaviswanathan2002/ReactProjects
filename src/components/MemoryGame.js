@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Stopwatch from './Stopwatch';
 
 const MemoryGame = ({ onBack }) => {
   const emojis = ['🍎', '🍌', '🍒', '🍕', '🎮', '⚽', '🎸', '📚'];
@@ -10,7 +9,6 @@ const MemoryGame = ({ onBack }) => {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameWon, setGameWon] = useState(false);
   const [moves, setMoves] = useState(0);
-  const [time, setTime] = useState(0);
 
   // Initialize game
   useEffect(() => {
@@ -37,7 +35,6 @@ const MemoryGame = ({ onBack }) => {
     setGameStarted(false);
     setGameWon(false);
     setMoves(0);
-    setTime(0);
   };
 
   const handleCardClick = (id) => {
@@ -96,13 +93,11 @@ const MemoryGame = ({ onBack }) => {
         </div>
       </div>
 
-      <Stopwatch isRunning={gameStarted && !gameWon} onTimeUpdate={setTime} />
-
       {gameWon && (
         <div className="game-won">
           <div className="won-content">
             <h3>🎉 You Won!</h3>
-            <p>Completed in {moves} moves and {Math.floor(time / 60)}:{(time % 60).toString().padStart(2, '0')}</p>
+            <p>Completed in {moves} moves!</p>
             <button className="btn btn-primary" onClick={handleReplay}>
               🔄 Play Again
             </button>
