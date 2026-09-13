@@ -38,6 +38,44 @@ A full-stack memory management application built with React and Node.js featurin
 - **bcryptjs** - Password hashing
 - **CORS** - Cross-origin resource sharing
 
+## 🏗️ Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    MEMORY APP                            │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│  ┌──────────────────┐         ┌──────────────────┐    │
+│  │   React (Port    │         │  Express Server  │    │
+│  │    3000)         │◄───────►│  (Port 5000)     │    │
+│  │                  │         │                  │    │
+│  │ ├─ Login         │         │ ├─ Auth Routes  │    │
+│  │ ├─ Signup        │         │ ├─ Memory API   │    │
+│  │ ├─ Dashboard     │         │ └─ Middleware   │    │
+│  │ ├─ Game          │         │                  │    │
+│  │ └─ Notes         │         │                  │    │
+│  └──────────────────┘         └────────┬─────────┘    │
+│          │                              │              │
+│          └──────────────────────────────┘              │
+│                                                         │
+│                   JWT Authentication                   │
+│              (Secure Token Exchange)                   │
+│                                                         │
+│  ┌─────────────────────────────────────────────────┐  │
+│  │           SQLite Database                       │  │
+│  │  ┌──────────────────┐  ┌──────────────────┐    │  │
+│  │  │  Users Table     │  │  Memories Table  │    │  │
+│  │  │  - id            │  │  - id            │    │  │
+│  │  │  - email         │  │  - userId (FK)   │    │  │
+│  │  │  - username      │  │  - title         │    │  │
+│  │  │  - password      │  │  - description   │    │  │
+│  │  │  - createdAt     │  │  - createdAt     │    │  │
+│  │  └──────────────────┘  └──────────────────┘    │  │
+│  └─────────────────────────────────────────────────┘  │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
 ## 📋 Project Structure
 
 ```
