@@ -1,195 +1,346 @@
-/* Memory Game CSS - Full of issues for testing */
-
-/* ISSUE 1: Duplicate selectors */
-.App {
-  text-align: center;
+* {
+  box-sizing: border-box;
 }
 
-.App {
-  background-color: #f5f5f5;
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
 }
 
 .App {
   min-height: 100vh;
 }
 
-/* ISSUE 2: Overly specific selectors */
-div.App div.memory-game div.card {
-  cursor: pointer;
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 24px;
 }
 
-/* ISSUE 3: Deep nesting - hard to maintain */
-.memory-game .card .card-inner {
-  width: 100%;
-  height: 100%;
+/* Game Page Styles */
+.game-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  flex-direction: column;
 }
 
-/* ISSUE 4: Using !important everywhere - BAD PRACTICE */
-.card {
-  margin: 10px !important;
-  padding: 10px !important;
-  border-radius: 8px !important;
-}
-
-/* ISSUE 5: Magic numbers in CSS */
-button {
-  padding: 10px 20px;
-  margin: 5px;
-  font-size: 16px;
-}
-
-/* ISSUE 6: Using px for everything - not responsive */
-h1 {
-  font-size: 32px;
-  margin: 10px;
-  padding: 15px;
-}
-
-/* ISSUE 7: Unused CSS class */
-.unused-leaderboard-style {
-  background-color: red;
-  border: 1px solid blue;
-}
-
-/* ISSUE 8: Duplicate properties */
-.leaderboard {
-  background-color: #fff;
+.game-header {
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
   padding: 20px;
-  background-color: #f9f9f9;
-}
-
-/* ISSUE 9: Conflicting selectors */
-ul li {
-  color: #333;
-}
-
-li {
-  color: #444;
-}
-
-ul li {
-  color: #555;
-}
-
-/* ISSUE 10: Selector specificity war */
-.App-header h1 {
-  color: #333;
-}
-
-.App-header > h1 {
-  color: #222;
-}
-
-div.App-header h1 {
-  color: #111;
-}
-
-/* ISSUE 11: Redundant styles */
-button {
-  cursor: pointer;
-  cursor: pointer;
-  cursor: pointer;
-}
-
-/* ISSUE 12: Hard-coded colors instead of variables */
-.card {
-  background-color: #4169E1;
-  border-color: #333333;
-}
-
-.card.flipped {
-  background-color: #87CEEB;
-}
-
-/* ISSUE 13: Inefficient selector */
-div.memory-game > div > div > div.card {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-/* ISSUE 14: Z-index magic number */
-.card.flipped {
-  z-index: 100;
+.game-header h1 {
+  margin: 0;
+  color: white;
+  font-size: 32px;
 }
 
-/* ISSUE 15: Unused media query */
-@media (max-width: 500px) {
-  .old-mobile-style {
-    display: none;
-  }
-}
-
-/* ISSUE 16: Inconsistent naming */
-.cardContainer {
+.header-actions {
   display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.card_container {
-  margin: 10px;
+.game-main {
+  flex: 1;
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 }
 
-.cardcontainer {
-  padding: 5px;
+/* Memory Game Styles */
+.memory-game {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  text-align: center;
 }
 
-/* ISSUE 17: Missing fallback for font-family */
-body {
-  font-family: 'Roboto', sans-serif;
+.memory-game h2 {
+  color: #333;
+  margin-top: 0;
+  font-size: 24px;
 }
 
-/* ISSUE 18: Vendor prefixes not needed */
-.card {
-  -webkit-border-radius: 8px;
-  -moz-border-radius: 8px;
+.memory-game p {
+  color: #666;
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+.game-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.game-stats span {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  background: #f0f0f0;
+  padding: 10px 20px;
   border-radius: 8px;
 }
 
-/* ISSUE 19: Duplicate rule with different specificity */
-.leaderboard ul li {
-  list-style: none;
-  padding: 5px;
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin: 30px 0;
+  justify-content: center;
+  width: 100%;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.leaderboard ul {
-  list-style: none;
-  padding: 5px;
+@media (max-width: 600px) {
+  .cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
 }
 
-/* ISSUE 20: Unused pseudo-class styles */
-button:hover {
+.card {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  border: 2px solid #333;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  user-select: none;
+}
+
+.card:hover:not([aria-disabled="true"]) {
   transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-button:active {
+.card:active {
   transform: scale(0.95);
 }
 
-button:focus {
-  outline: 2px solid blue;
+.card.flipped {
+  background: #87CEEB;
 }
 
-/* ISSUE 21: Redundant wrapper selector */
-.App-header .App-header {
-  background-color: #222;
+.card.matched {
+  background: #90EE90;
+  border-color: #4CAF50;
+  cursor: default;
 }
 
-/* ISSUE 22: Confusing comments */
-.button-group {
+.card {
+  background: #4169E1;
+  color: white;
+  cursor: pointer;
+}
+
+.welcome-text {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  align-self: center;
+}
+
+.game-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.btn-secondary {
+  background: #f44336;
+  color: white;
+}
+
+.btn-danger {
+  background: #f44336;
+  color: white;
+}
+
+.btn-outline {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.completion-message {
+  background: #90EE90;
+  border: 2px solid #4CAF50;
+  color: #2e7d32;
+  padding: 20px;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
   margin-top: 20px;
+  animation: slideIn 0.3s ease-out;
 }
 
-/* The button group is above the grid */
-
-/* ISSUE 23: Empty rule */
-.memory-game {
+/* Leaderboard Styles */
+.leaderboard {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  margin-top: 30px;
 }
 
-/* ISSUE 24: Invalid CSS property value */
-h2 {
-  font-size: -20px;
-  margin: abc;
+.leaderboard h3 {
+  color: #333;
+  font-size: 22px;
+  margin-top: 0;
+  border-bottom: 3px solid #667eea;
+  padding-bottom: 10px;
 }
 
-/* ISSUE 25: Missing proper reset */
-* {
-  box-sizing: content-box;
+.leaderboard ol {
+  text-align: left;
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 0;
+  list-style-position: inside;
+}
+
+.leaderboard li {
+  padding: 12px;
+  margin: 8px 0;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+  font-size: 16px;
+  color: #333;
+}
+
+.leaderboard li:first-child {
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  border-left-color: #ffd700;
+}
+
+.leaderboard li:nth-child(2) {
+  background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+  border-left-color: #c0c0c0;
+}
+
+.leaderboard li:nth-child(3) {
+  background: linear-gradient(135deg, #cd7f32, #e8d4b8);
+  border-left-color: #cd7f32;
+}
+
+.leaderboard p {
+  text-align: center;
+  color: #666;
+  font-size: 16px;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .game-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .game-header h1 {
+    font-size: 24px;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions button {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .game-main {
+    padding: 20px 10px;
+  }
+
+  .memory-game {
+    padding: 20px;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .card {
+    font-size: 24px;
+  }
+
+  .game-stats {
+    gap: 20px;
+    flex-direction: column;
+  }
+
+  .game-stats span {
+    width: 100%;
+  }
 }

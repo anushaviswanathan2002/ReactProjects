@@ -1,0 +1,5 @@
+node_modules/
+build/
+server/node_modules/
+server/users.json
+*.log
