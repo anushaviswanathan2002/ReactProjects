@@ -20,8 +20,7 @@ export const todoService = {
       category,
       completed: false,
       createdAt: new Date().toISOString(),
-      dueDate: null,
-      timeSpent: 0
+      dueDate: null
     };
 
     todos.push(newTodo);

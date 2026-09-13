@@ -58,12 +58,6 @@ function TodoApp({ user, onLogout }) {
     setEditingTodo(null);
   };
 
-  // Handle time update for todos
-  const handleTimeUpdate = (todoId, timeSpent) => {
-    todoService.updateTodo(user.id, todoId, { timeSpent });
-    setTodos(todos.map(t => t.id === todoId ? { ...t, timeSpent } : t));
-  };
-
   // Filter todos based on status and category
   const filteredTodos = todos.filter(todo => {
     let statusMatch = true;
@@ -154,7 +148,6 @@ function TodoApp({ user, onLogout }) {
               onToggle={handleToggleTodo}
               onDelete={handleDeleteTodo}
               onEdit={handleEditTodo}
-              onTimeUpdate={handleTimeUpdate}
             />
           )}
         </div>
