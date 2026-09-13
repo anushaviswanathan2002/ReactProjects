@@ -13,6 +13,7 @@ export default function Dashboard({ username, token, onLogout }) {
 
   useEffect(() => {
     fetchMemories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchMemories = async () => {
