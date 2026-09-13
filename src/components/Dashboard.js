@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import MemoryList from './MemoryList';
 import MemoryForm from './MemoryForm';
+import MemoryGame from './MemoryGame';
 
 function Dashboard({ user, onLogout, onUpdateMemories }) {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [showGame, setShowGame] = useState(false);
 
   const handleAddMemory = (title, content) => {
     const newMemory = {
@@ -41,6 +43,10 @@ function Dashboard({ user, onLogout, onUpdateMemories }) {
     return user.memories.find(m => m.id === editingId);
   };
 
+  if (showGame) {
+    return <MemoryGame onBack={() => setShowGame(false)} />;
+  }
+
   return (
     <div className="dashboard">
       <header className="dashboard-header">
@@ -48,9 +54,14 @@ function Dashboard({ user, onLogout, onUpdateMemories }) {
           <h1>My Memories</h1>
           <p className="user-info">Welcome, {user.name}!</p>
         </div>
-        <button onClick={onLogout} className="btn btn-danger">
-          Logout
-        </button>
+        <div className="header-buttons">
+          <button onClick={() => setShowGame(true)} className="btn btn-game">
+            🎮 Play Memory Game
+          </button>
+          <button onClick={onLogout} className="btn btn-danger">
+            Logout
+          </button>
+        </div>
       </header>
 
       <main className="dashboard-content">
